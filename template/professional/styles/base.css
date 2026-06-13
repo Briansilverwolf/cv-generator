@@ -1,0 +1,40 @@
+:root {
+    --font-main: Arial, sans-serif;
+    --text: #1a1a1a;
+    --muted: #666;
+    --line: #e6e6e6;
+    --accent: #333;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: var(--font-main);
+    color: var(--text);
+    background: #fff;
+    line-height: 1.5;
+}
+
+.cv-page {
+    max-width: 850px;
+    margin: 0 auto;
+    padding: 40px;
+}
+
+h1, h2, h3 {
+    margin: 0;
+    font-weight: 600;
+}
+
+section {
+    margin-bottom: 24px;
+}
+
+h2 {
+    font-size: 14px;
+    text-transform: uppercase;
+    color: var(--muted);
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 6px;
+    margin-bottom: 12px;
+}

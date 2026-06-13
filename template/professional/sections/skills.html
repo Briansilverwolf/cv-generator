@@ -1,0 +1,17 @@
+{% if section.type == "skills" %}
+<section class="cv-section">
+    <h2>Skills</h2>
+
+    {% for group in section.data %}
+    <div>
+        <h4>{{ group.category }}</h4>
+        <ul>
+            {% for item in group.skills %}
+            <li>{{ item }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endfor %}
+
+</section>
+{% endif %}

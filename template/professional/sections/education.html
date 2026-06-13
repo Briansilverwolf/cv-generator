@@ -1,0 +1,14 @@
+{% if section.type == "education" %}
+<section class="cv-section">
+    <h2>Education</h2>
+
+    {% for edu in section.data %}
+    <div>
+        <strong>{{ edu.degree }}</strong>
+        <p>{{ edu.institution }}</p>
+        <p>{{ edu.field_of_study }} {{ edu.graduation_year }}</p>
+    </div>
+    {% endfor %}
+
+</section>
+{% endif %}

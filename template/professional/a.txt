@@ -1,0 +1,476 @@
+professional/
+│   ├── a.txt
+│   │   └── Contents of a.txt:
+│   └── layout.html
+│   │   └── Contents of layout.html:
+│   │   │   <!DOCTYPE html>
+│   │   │   <html lang="en">
+│   │   │   <head>
+│   │   │       <meta charset="utf-8">
+│   │   │       <title>{{ contact.name }} — CV</title>
+│   │   │   
+│   │   │       <style>  {{ base_css }} </style>
+│   │   │   
+│   │   │       <style>   {{ variant_css }} </style>
+│   │   │   </head>
+│   │   │   <body>
+│   │   │   
+│   │   │   <main class="cv-page">
+│   │   │       {% include template_slot + "/sections/header.html" %}
+│   │   │       {% include template_slot + "/sections/summary.html" %}
+│   │   │       {% for section in sections %}
+│   │   │           {% if section.type == "experience" %}
+│   │   │               {% include template_slot + "/sections/experience.html" %}
+│   │   │           {% elif section.type == "skills" %}
+│   │   │               {% include template_slot + "/sections/skills.html" %}
+│   │   │           {% elif section.type == "education" %}
+│   │   │               {% include template_slot + "/sections/education.html" %}
+│   │   │           {% elif section.type == "projects" %}
+│   │   │               {% include template_slot + "/sections/projects.html" %}
+│   │   │           {% elif section.type == "certifications" %}
+│   │   │               {% include template_slot + "/sections/certifications.html" %}
+│   │   │           {% endif %}
+│   │   │       {% endfor %}
+│   │   │   </main>
+│   │   │   </body>
+│   │   │   </html>
+│   ├── sections/
+│   │   ├── certifications.html
+│   │   │   └── Contents of certifications.html:
+│   │   │   │   {% if section.type == "certifications" %}
+│   │   │   │   <section class="cv-section">
+│   │   │   │       <h2>Certifications</h2>
+│   │   │   │   
+│   │   │   │       <ul>
+│   │   │   │           {% for cert in section.data %}
+│   │   │   │           <li>
+│   │   │   │               {{ cert.name }} — {{ cert.issuer }} ({{ cert.year }})
+│   │   │   │           </li>
+│   │   │   │           {% endfor %}
+│   │   │   │       </ul>
+│   │   │   │   
+│   │   │   │   </section>
+│   │   │   │   {% endif %}
+│   │   ├── education.html
+│   │   │   └── Contents of education.html:
+│   │   │   │   {% if section.type == "education" %}
+│   │   │   │   <section class="cv-section">
+│   │   │   │       <h2>Education</h2>
+│   │   │   │   
+│   │   │   │       {% for edu in section.data %}
+│   │   │   │       <div>
+│   │   │   │           <strong>{{ edu.degree }}</strong>
+│   │   │   │           <p>{{ edu.institution }}</p>
+│   │   │   │           <p>{{ edu.field_of_study }} {{ edu.graduation_year }}</p>
+│   │   │   │       </div>
+│   │   │   │       {% endfor %}
+│   │   │   │   
+│   │   │   │   </section>
+│   │   │   │   {% endif %}
+│   │   ├── experience.html
+│   │   │   └── Contents of experience.html:
+│   │   │   │   {% if section.type == "experience" %}
+│   │   │   │   <section class="cv-section">
+│   │   │   │       <h2>Experience</h2>
+│   │   │   │   
+│   │   │   │       {% for job in section.data %}
+│   │   │   │       <article>
+│   │   │   │           <h3>{{ job.title }}</h3>
+│   │   │   │           <p>{{ job.company }} | {{ job.location }}</p>
+│   │   │   │           <p>{{ job.start_date }} - {{ job.end_date or "Present" }}</p>
+│   │   │   │   
+│   │   │   │           <ul>
+│   │   │   │               {% for b in job.bullets %}
+│   │   │   │               <li>{{ b.text }}</li>
+│   │   │   │               {% endfor %}
+│   │   │   │           </ul>
+│   │   │   │       </article>
+│   │   │   │       {% endfor %}
+│   │   │   │   
+│   │   │   │   </section>
+│   │   │   │   {% endif %}
+│   │   ├── header.html
+│   │   │   └── Contents of header.html:
+│   │   │   │   <header class="cv-header">
+│   │   │   │       <h1>{{ contact.name }}</h1>
+│   │   │   │   
+│   │   │   │       <div class="contact">
+│   │   │   │           {% if contact.email %}<span>{{ contact.email }}</span>{% endif %}
+│   │   │   │           {% if contact.phone %}<span>{{ contact.phone }}</span>{% endif %}
+│   │   │   │           {% if contact.location %}<span>{{ contact.location }}</span>{% endif %}
+│   │   │   │       </div>
+│   │   │   │   </header>
+│   │   ├── projects.html
+│   │   │   └── Contents of projects.html:
+│   │   │   │   {% if section.type == "projects" %}
+│   │   │   │   <section class="cv-section">
+│   │   │   │       <h2>Projects</h2>
+│   │   │   │   
+│   │   │   │       {% for project in section.data %}
+│   │   │   │       <div>
+│   │   │   │           <h3>{{ project.name }}</h3>
+│   │   │   │           <p>{{ project.tech_stack | join(" · ") }}</p>
+│   │   │   │           <p>{{ project.description }}</p>
+│   │   │   │   
+│   │   │   │           <ul>
+│   │   │   │               {% for b in project.bullets %}
+│   │   │   │               <li>{{ b.text }}</li>
+│   │   │   │               {% endfor %}
+│   │   │   │           </ul>
+│   │   │   │       </div>
+│   │   │   │       {% endfor %}
+│   │   │   │   
+│   │   │   │   </section>
+│   │   │   │   {% endif %}
+│   │   ├── skills.html
+│   │   │   └── Contents of skills.html:
+│   │   │   │   {% if section.type == "skills" %}
+│   │   │   │   <section class="cv-section">
+│   │   │   │       <h2>Skills</h2>
+│   │   │   │   
+│   │   │   │       {% for group in section.data %}
+│   │   │   │       <div>
+│   │   │   │           <h4>{{ group.category }}</h4>
+│   │   │   │           <ul>
+│   │   │   │               {% for item in group.skills %}
+│   │   │   │               <li>{{ item }}</li>
+│   │   │   │               {% endfor %}
+│   │   │   │           </ul>
+│   │   │   │       </div>
+│   │   │   │       {% endfor %}
+│   │   │   │   
+│   │   │   │   </section>
+│   │   │   │   {% endif %}
+│   │   └── summary.html
+│   │   │   └── Contents of summary.html:
+│   │   │   │   <section class="cv-section">
+│   │   │   │       <h2>Summary</h2>
+│   │   │   │       <p>{{ summary.text }}</p>
+│   │   │   │   </section>
+│   ├── styles/
+│   │   ├── ats.css
+│   │   │   └── Contents of ats.css:
+│   │   │   │   body {
+│   │   │   │       font-family: Arial, sans-serif;
+│   │   │   │       background: #fff;
+│   │   │   │       color: #000;
+│   │   │   │       line-height: 1.4;
+│   │   │   │   }
+│   │   │   │   
+│   │   │   │   .cv-page {
+│   │   │   │       max-width: 800px;
+│   │   │   │       margin: 0 auto;
+│   │   │   │       padding: 30px;
+│   │   │   │   }
+│   │   │   │   
+│   │   │   │   section {
+│   │   │   │       margin-bottom: 20px;
+│   │   │   │   }
+│   │   │   │   
+│   │   │   │   h1, h2, h3 {
+│   │   │   │       font-weight: 700;
+│   │   │   │       color: #000;
+│   │   │   │   }
+│   │   │   │   
+│   │   │   │   h2 {
+│   │   │   │       font-size: 13px;
+│   │   │   │       text-transform: uppercase;
+│   │   │   │       margin-bottom: 10px;
+│   │   │   │   }
+│   │   │   │   
+│   │   │   │   p, li {
+│   │   │   │       font-size: 12px;
+│   │   │   │   }
+│   │   │   │   
+│   │   │   │   ul {
+│   │   │   │       padding-left: 18px;
+│   │   │   │   }
+│   │   │   │   
+│   │   │   │   /* remove decorative styling */
+│   │   │   │   * {
+│   │   │   │       box-shadow: none !important;
+│   │   │   │       text-shadow: none !important;
+│   │   │   │   }
+│   │   ├── base.css
+│   │   │   └── Contents of base.css:
+│   │   │   │   :root {
+│   │   │   │       --font-main: Arial, sans-serif;
+│   │   │   │       --text: #1a1a1a;
+│   │   │   │       --muted: #666;
+│   │   │   │       --line: #e6e6e6;
+│   │   │   │       --accent: #333;
+│   │   │   │   }
+│   │   │   │   
+│   │   │   │   body {
+│   │   │   │       margin: 0;
+│   │   │   │       padding: 0;
+│   │   │   │       font-family: var(--font-main);
+│   │   │   │       color: var(--text);
+│   │   │   │       background: #fff;
+│   │   │   │       line-height: 1.5;
+│   │   │   │   }
+│   │   │   │   
+│   │   │   │   .cv-page {
+│   │   │   │       max-width: 850px;
+│   │   │   │       margin: 0 auto;
+│   │   │   │       padding: 40px;
+│   │   │   │   }
+│   │   │   │   
+│   │   │   │   h1, h2, h3 {
+│   │   │   │       margin: 0;
+│   │   │   │       font-weight: 600;
+│   │   │   │   }
+│   │   │   │   
+│   │   │   │   section {
+│   │   │   │       margin-bottom: 24px;
+│   │   │   │   }
+│   │   │   │   
+│   │   │   │   h2 {
+│   │   │   │       font-size: 14px;
+│   │   │   │       text-transform: uppercase;
+│   │   │   │       color: var(--muted);
+│   │   │   │       border-bottom: 1px solid var(--line);
+│   │   │   │       padding-bottom: 6px;
+│   │   │   │       margin-bottom: 12px;
+│   │   │   │   }
+│   │   ├── compact.css
+│   │   │   └── Contents of compact.css:
+│   │   │   │   /* =========================
+│   │   │   │      COMPACT CV VARIANT
+│   │   │   │      High-density ATS-friendly
+│   │   │   │      ========================= */
+│   │   │   │   
+│   │   │   │   /* Fonts */
+│   │   │   │   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
+│   │   │   │   
+│   │   │   │   :root {
+│   │   │   │       --text: #1a1a1a;
+│   │   │   │       --muted: #666;
+│   │   │   │       --border: #e6e6e6;
+│   │   │   │       --bg: #ffffff;
+│   │   │   │   
+│   │   │   │       --font: 'Inter', Arial, sans-serif;
+│   │   │   │   
+│   │   │   │       --space-1: 4px;
+│   │   │   │       --space-2: 8px;
+│   │   │   │       --space-3: 12px;
+│   │   │   │       --space-4: 16px;
+│   │   │   │   }
+│   │   │   │   
+│   │   │   │   * {
+│   │   │   │       box-sizing: border-box;
+│   │   │   │       margin: 0;
+│   │   │   │       padding: 0;
+│   │   │   │   }
+│   │   │   │   
+│   │   │   │   body {
+│   │   │   │       font-family: var(--font);
+│   │   │   │       background: var(--bg);
+│   │   │   │       color: var(--text);
+│   │   │   │       line-height: 1.4;
+│   │   │   │       font-size: 12px;
+│   │   │   │   }
+│   │   │   │   
+│   │   │   │   /* Page */
+│   │   │   │   .cv-page {
+│   │   │   │       max-width: 900px;
+│   │   │   │       margin: 0 auto;
+│   │   │   │       padding: 24px;
+│   │   │   │   }
+│   │   │   │   
+│   │   │   │   /* Header */
+│   │   │   │   .cv-header {
+│   │   │   │       display: flex;
+│   │   │   │       justify-content: space-between;
+│   │   │   │       align-items: flex-start;
+│   │   │   │       border-bottom: 1px solid var(--border);
+│   │   │   │       padding-bottom: var(--space-3);
+│   │   │   │       margin-bottom: var(--space-4);
+│   │   │   │   }
+│   │   │   │   
+│   │   │   │   .cv-header__name {
+│   │   │   │       font-size: 20px;
+│   │   │   │       font-weight: 600;
+│   │   │   │   }
+│   │   │   │   
+│   │   │   │   .cv-header__contact {
+│   │   │   │       font-size: 11px;
+│   │   │   │       color: var(--muted);
+│   │   │   │       text-align: right;
+│   │   │   │   }
+│   │   │   │   
+│   │   │   │   /* Section layout (flatten grid for density) */
+│   │   │   │   .cv-section {
+│   │   │   │       display: block;
+│   │   │   │       margin-bottom: var(--space-4);
+│   │   │   │   }
+│   │   │   │   
+│   │   │   │   .cv-section__label h2 {
+│   │   │   │       font-size: 10px;
+│   │   │   │       text-transform: uppercase;
+│   │   │   │       letter-spacing: 0.08em;
+│   │   │   │       color: var(--muted);
+│   │   │   │       margin-bottom: var(--space-2);
+│   │   │   │   }
+│   │   │   │   
+│   │   │   │   /* Summary */
+│   │   │   │   .summary-text {
+│   │   │   │       font-size: 12px;
+│   │   │   │       line-height: 1.5;
+│   │   │   │   }
+│   │   │   │   
+│   │   │   │   /* Skills */
+│   │   │   │   .skills-categories {
+│   │   │   │       display: flex;
+│   │   │   │       flex-direction: column;
+│   │   │   │       gap: var(--space-2);
+│   │   │   │   }
+│   │   │   │   
+│   │   │   │   .skill-group__label {
+│   │   │   │       font-size: 10px;
+│   │   │   │       font-weight: 600;
+│   │   │   │       color: var(--muted);
+│   │   │   │       margin-bottom: 4px;
+│   │   │   │   }
+│   │   │   │   
+│   │   │   │   .skill-group__tags {
+│   │   │   │       display: flex;
+│   │   │   │       flex-wrap: wrap;
+│   │   │   │       gap: 6px;
+│   │   │   │       list-style: none;
+│   │   │   │   }
+│   │   │   │   
+│   │   │   │   .skill-group__tags li {
+│   │   │   │       font-size: 11px;
+│   │   │   │       padding: 2px 6px;
+│   │   │   │       border: 1px solid var(--border);
+│   │   │   │       border-radius: 2px;
+│   │   │   │   }
+│   │   │   │   
+│   │   │   │   /* Experience */
+│   │   │   │   .experience-list {
+│   │   │   │       display: flex;
+│   │   │   │       flex-direction: column;
+│   │   │   │       gap: var(--space-3);
+│   │   │   │   }
+│   │   │   │   
+│   │   │   │   .job {
+│   │   │   │       padding-left: 10px;
+│   │   │   │       border-left: 2px solid var(--border);
+│   │   │   │   }
+│   │   │   │   
+│   │   │   │   .job__title {
+│   │   │   │       font-size: 13px;
+│   │   │   │       font-weight: 600;
+│   │   │   │   }
+│   │   │   │   
+│   │   │   │   .job__company {
+│   │   │   │       font-size: 10px;
+│   │   │   │       color: var(--muted);
+│   │   │   │       text-transform: uppercase;
+│   │   │   │   }
+│   │   │   │   
+│   │   │   │   .job__meta {
+│   │   │   │       font-size: 10px;
+│   │   │   │       color: var(--muted);
+│   │   │   │       margin-bottom: 4px;
+│   │   │   │   }
+│   │   │   │   
+│   │   │   │   .job__bullets {
+│   │   │   │       list-style: none;
+│   │   │   │   }
+│   │   │   │   
+│   │   │   │   .job__bullets li {
+│   │   │   │       font-size: 11px;
+│   │   │   │       margin-bottom: 3px;
+│   │   │   │   }
+│   │   │   │   
+│   │   │   │   /* Projects */
+│   │   │   │   .project {
+│   │   │   │       padding-left: 10px;
+│   │   │   │       border-left: 2px solid var(--border);
+│   │   │   │       margin-bottom: var(--space-3);
+│   │   │   │   }
+│   │   │   │   
+│   │   │   │   .project__name {
+│   │   │   │       font-size: 12px;
+│   │   │   │       font-weight: 600;
+│   │   │   │   }
+│   │   │   │   
+│   │   │   │   .project__tech {
+│   │   │   │       font-size: 10px;
+│   │   │   │       color: var(--muted);
+│   │   │   │   }
+│   │   │   │   
+│   │   │   │   /* Education */
+│   │   │   │   .edu__degree {
+│   │   │   │       font-size: 12px;
+│   │   │   │       font-weight: 600;
+│   │   │   │   }
+│   │   │   │   
+│   │   │   │   .edu__institution {
+│   │   │   │       font-size: 10px;
+│   │   │   │       color: var(--muted);
+│   │   │   │   }
+│   │   │   │   
+│   │   │   │   /* Certifications */
+│   │   │   │   .cert-list {
+│   │   │   │       list-style: none;
+│   │   │   │   }
+│   │   │   │   
+│   │   │   │   .cert-list li {
+│   │   │   │       font-size: 11px;
+│   │   │   │       margin-bottom: 4px;
+│   │   │   │   }
+│   │   │   │   
+│   │   │   │   /* Footer */
+│   │   │   │   .cv-footer {
+│   │   │   │       border-top: 1px solid var(--border);
+│   │   │   │       margin-top: 20px;
+│   │   │   │       padding-top: 10px;
+│   │   │   │       display: flex;
+│   │   │   │       justify-content: space-between;
+│   │   │   │       font-size: 9px;
+│   │   │   │       color: var(--muted);
+│   │   │   │   }
+│   │   │   │   
+│   │   │   │   /* Print optimization */
+│   │   │   │   @media print {
+│   │   │   │       body {
+│   │   │   │           font-size: 11px;
+│   │   │   │       }
+│   │   │   │   
+│   │   │   │       .cv-page {
+│   │   │   │           padding: 18px;
+│   │   │   │       }
+│   │   │   │   }
+│   │   └── detailed.css
+│   │   │   └── Contents of detailed.css:
+│   │   │   │   .cv-page {
+│   │   │   │       padding: 60px;
+│   │   │   │   }
+│   │   │   │   
+│   │   │   │   section {
+│   │   │   │       margin-bottom: 36px;
+│   │   │   │   }
+│   │   │   │   
+│   │   │   │   h2 {
+│   │   │   │       font-size: 15px;
+│   │   │   │       margin-bottom: 16px;
+│   │   │   │       padding-bottom: 8px;
+│   │   │   │   }
+│   │   │   │   
+│   │   │   │   h3 {
+│   │   │   │       font-size: 14px;
+│   │   │   │       margin-bottom: 6px;
+│   │   │   │   }
+│   │   │   │   
+│   │   │   │   p, li {
+│   │   │   │       font-size: 14px;
+│   │   │   │       line-height: 1.8;
+│   │   │   │   }
+│   │   │   │   
+│   │   │   │   ul {
+│   │   │   │       margin: 10px 0;
+│   │   │   │       padding-left: 20px;
+│   │   │   │   }

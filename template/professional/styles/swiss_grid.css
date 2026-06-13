@@ -1,0 +1,213 @@
+/* ==============================================
+   SWISS GRID VARIANT
+   Grid discipline, signal red, zero ornament
+   Design · Engineering · Tech
+   ============================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500;700&display=swap');
+
+:root {
+    --bg:       #f7f6f4;
+    --text:     #0d0d0d;
+    --muted:    #6b6b6b;
+    --signal:   #e63329;   /* Swiss red */
+    --line:     #0d0d0d;
+    --font-sans: 'DM Sans', Helvetica, Arial, sans-serif;
+    --font-mono: 'DM Mono', 'Courier New', monospace;
+    --col-label: 160px;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-sans);
+    font-size: 13px;
+    font-weight: 300;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* ── Page ── */
+.cv-page {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 48px 52px;
+}
+
+/* ── Header ── */
+.cv-header {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: end;
+    border-top: 4px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    padding: 20px 0 18px;
+    margin-bottom: 40px;
+}
+
+.cv-header h1 {
+    font-family: var(--font-sans);
+    font-size: 36px;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1;
+    color: var(--text);
+}
+
+.cv-header h1::after {
+    content: '.';
+    color: var(--signal);
+}
+
+.cv-header .contact {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 3px;
+}
+
+.cv-header .contact span {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 300;
+    color: var(--muted);
+    letter-spacing: 0;
+}
+
+/* ── Sections: two-column label/content grid ── */
+.cv-section {
+    display: grid;
+    grid-template-columns: var(--col-label) 1fr;
+    border-top: 1px solid var(--line);
+    padding: 22px 0;
+    gap: 0 32px;
+    margin-bottom: 0;
+}
+
+.cv-section h2 {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    font-weight: 400;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--signal);
+    padding-top: 2px;
+    border-bottom: none;
+}
+
+/* ── Summary ── */
+.cv-section p {
+    font-size: 13px;
+    font-weight: 300;
+    line-height: 1.7;
+    color: var(--text);
+    max-width: 580px;
+}
+
+/* ── Experience ── */
+article {
+    margin-bottom: 22px;
+    padding-bottom: 22px;
+    border-bottom: 1px solid #ddd;
+}
+
+article:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+article h3 {
+    font-family: var(--font-sans);
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: var(--text);
+    margin-bottom: 2px;
+}
+
+article p {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 300;
+    color: var(--muted);
+    margin-bottom: 3px;
+    line-height: 1.5;
+}
+
+article ul {
+    list-style: none;
+    margin-top: 8px;
+    padding: 0;
+}
+
+article ul li {
+    font-size: 12px;
+    font-weight: 300;
+    color: var(--text);
+    padding: 2px 0 2px 14px;
+    position: relative;
+    line-height: 1.6;
+}
+
+article ul li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    color: var(--signal);
+    font-size: 10px;
+    top: 3px;
+}
+
+/* ── Skills ── */
+.cv-section div {
+    margin-bottom: 12px;
+}
+
+.cv-section h4 {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+    margin-bottom: 6px;
+}
+
+.cv-section ul {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    padding: 0;
+}
+
+.cv-section ul li {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text);
+    border: 1px solid var(--line);
+    padding: 3px 8px;
+    background: transparent;
+}
+
+/* ── Education ── */
+.cv-section div strong {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text);
+    display: block;
+    margin-bottom: 2px;
+}
+
+/* ── Print ── */
+@media print {
+    body { background: #fff; }
+    .cv-page { padding: 30px; }
+}

@@ -1,0 +1,20 @@
+{% if section.type == "experience" %}
+<section class="cv-section">
+    <h2>Experience</h2>
+
+    {% for job in section.data %}
+    <article>
+        <h3>{{ job.title }}</h3>
+        <p>{{ job.company }} | {{ job.location }}</p>
+        <p>{{ job.start_date }} - {{ job.end_date or "Present" }}</p>
+
+        <ul>
+            {% for b in job.bullets %}
+            <li>{{ b.text }}</li>
+            {% endfor %}
+        </ul>
+    </article>
+    {% endfor %}
+
+</section>
+{% endif %}

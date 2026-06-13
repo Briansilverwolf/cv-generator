@@ -1,0 +1,224 @@
+/* ==============================================
+   OBSIDIAN VARIANT
+   Dark slate, copper accents
+   Finance · Law · Executive
+   ============================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@300;400;500&display=swap');
+
+:root {
+    --bg:         #16191e;
+    --surface:    #1e2228;
+    --text:       #e8e4dc;
+    --muted:      #8a8a80;
+    --accent:     #b87333;   /* copper */
+    --accent-dim: #7a4d22;
+    --line:       #2e333b;
+    --font-display: 'Cormorant Garamond', Georgia, serif;
+    --font-body:    'Jost', Arial, sans-serif;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
+    font-weight: 300;
+    font-size: 13px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* ── Page ── */
+.cv-page {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 52px 56px;
+}
+
+/* ── Header ── */
+.cv-header {
+    border-bottom: 1px solid var(--accent);
+    padding-bottom: 28px;
+    margin-bottom: 40px;
+}
+
+.cv-header h1 {
+    font-family: var(--font-display);
+    font-size: 44px;
+    font-weight: 300;
+    letter-spacing: 0.04em;
+    color: var(--text);
+    line-height: 1.1;
+    margin-bottom: 14px;
+}
+
+.cv-header .contact {
+    display: flex;
+    gap: 28px;
+    flex-wrap: wrap;
+}
+
+.cv-header .contact span {
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+.cv-header .contact span::before {
+    content: '◆';
+    color: var(--accent);
+    margin-right: 8px;
+    font-size: 7px;
+    vertical-align: middle;
+}
+
+/* ── Sections ── */
+.cv-section {
+    margin-bottom: 36px;
+}
+
+.cv-section h2 {
+    font-family: var(--font-body);
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 18px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--line);
+}
+
+/* ── Summary ── */
+.cv-section p {
+    font-family: var(--font-display);
+    font-size: 15px;
+    font-weight: 300;
+    font-style: italic;
+    color: var(--text);
+    line-height: 1.7;
+    max-width: 640px;
+}
+
+/* ── Experience ── */
+article {
+    padding: 16px 0;
+    border-bottom: 1px solid var(--line);
+}
+
+article:last-child {
+    border-bottom: none;
+}
+
+article h3 {
+    font-family: var(--font-display);
+    font-size: 18px;
+    font-weight: 400;
+    color: var(--text);
+    margin-bottom: 4px;
+}
+
+article p {
+    font-family: var(--font-body);
+    font-size: 11px;
+    font-weight: 300;
+    color: var(--muted);
+    letter-spacing: 0.06em;
+    margin-bottom: 4px;
+}
+
+article ul {
+    list-style: none;
+    margin-top: 10px;
+    padding-left: 0;
+}
+
+article ul li {
+    font-family: var(--font-body);
+    font-size: 12px;
+    font-weight: 300;
+    color: var(--text);
+    padding: 3px 0 3px 16px;
+    position: relative;
+}
+
+article ul li::before {
+    content: '—';
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+    font-size: 10px;
+}
+
+/* ── Skills ── */
+.cv-section div {
+    margin-bottom: 14px;
+}
+
+.cv-section h4 {
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 8px;
+}
+
+.cv-section ul {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 0;
+}
+
+.cv-section ul li {
+    font-size: 11px;
+    color: var(--text);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    padding: 4px 10px;
+    letter-spacing: 0.03em;
+}
+
+/* ── Education ── */
+.cv-section div strong {
+    font-family: var(--font-display);
+    font-size: 16px;
+    font-weight: 400;
+    color: var(--text);
+    display: block;
+    margin-bottom: 2px;
+}
+
+/* ── Certifications ── */
+.cv-section > ul {
+    list-style: none;
+    padding: 0;
+}
+
+.cv-section > ul > li {
+    font-size: 12px;
+    color: var(--text);
+    padding: 6px 0;
+    border-bottom: 1px solid var(--line);
+}
+
+/* ── Print ── */
+@media print {
+    body { background: #fff; color: #111; }
+    :root {
+        --bg: #fff;
+        --surface: #f5f5f5;
+        --text: #111;
+        --muted: #555;
+        --line: #ccc;
+    }
+}

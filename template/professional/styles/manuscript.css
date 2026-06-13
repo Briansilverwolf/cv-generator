@@ -1,0 +1,242 @@
+/* ==============================================
+   MANUSCRIPT VARIANT
+   Typeset book, generous margins, ink on paper
+   Academic · Research · Publishing
+   ============================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,600;1,8..60,300;1,8..60,400&display=swap');
+
+:root {
+    --paper:    #faf8f3;
+    --ink:      #1c1814;
+    --muted:    #7a7268;
+    --rule:     #ccc8bf;
+    --marginal: #9c6b3c;   /* warm sienna for marginal notes */
+    --font-serif: 'Source Serif 4', 'Georgia', serif;
+    --font-head:  'Libre Baskerville', 'Georgia', serif;
+    --text-width: 520px;
+    --margin-left: 160px;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--font-serif);
+    font-size: 14px;
+    font-weight: 300;
+    line-height: 1.75;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* ── Page ── */
+.cv-page {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 64px 56px 64px var(--margin-left);
+}
+
+/* ── Header ── */
+.cv-header {
+    margin-bottom: 48px;
+    padding-bottom: 32px;
+    border-bottom: 2px solid var(--ink);
+}
+
+.cv-header h1 {
+    font-family: var(--font-head);
+    font-size: 34px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    line-height: 1.15;
+    color: var(--ink);
+    margin-bottom: 18px;
+}
+
+.cv-header .contact {
+    display: flex;
+    gap: 0;
+    flex-direction: column;
+}
+
+.cv-header .contact span {
+    font-family: var(--font-serif);
+    font-size: 12.5px;
+    font-weight: 300;
+    font-style: italic;
+    color: var(--muted);
+    line-height: 1.8;
+}
+
+.cv-header .contact span::after {
+    content: ' ·';
+    color: var(--rule);
+}
+
+.cv-header .contact span:last-child::after {
+    content: '';
+}
+
+/* ── Sections ── */
+.cv-section {
+    margin-bottom: 40px;
+    position: relative;
+}
+
+.cv-section h2 {
+    font-family: var(--font-head);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--marginal);
+    /* Pull heading into left margin */
+    position: absolute;
+    left: calc(-1 * var(--margin-left) + 20px);
+    top: 2px;
+    width: calc(var(--margin-left) - 40px);
+    text-align: right;
+    border-bottom: none;
+    padding-bottom: 0;
+    margin-bottom: 0;
+    line-height: 1.4;
+}
+
+/* ── Summary ── */
+.cv-section p {
+    font-size: 14.5px;
+    font-style: italic;
+    font-weight: 300;
+    color: var(--ink);
+    line-height: 1.8;
+    max-width: var(--text-width);
+}
+
+/* ── Experience ── */
+article {
+    margin-bottom: 28px;
+    max-width: var(--text-width);
+}
+
+article h3 {
+    font-family: var(--font-head);
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 2px;
+}
+
+article p {
+    font-size: 12px;
+    font-style: italic;
+    color: var(--muted);
+    margin-bottom: 4px;
+    line-height: 1.5;
+}
+
+article ul {
+    list-style: none;
+    margin-top: 8px;
+    padding-left: 0;
+}
+
+article ul li {
+    font-size: 13.5px;
+    font-weight: 300;
+    color: var(--ink);
+    padding: 2px 0 2px 22px;
+    position: relative;
+    line-height: 1.7;
+}
+
+article ul li::before {
+    content: '§';
+    position: absolute;
+    left: 0;
+    color: var(--marginal);
+    font-size: 11px;
+    font-family: var(--font-head);
+    top: 4px;
+}
+
+/* ── Horizontal rule between jobs ── */
+article + article {
+    border-top: 1px solid var(--rule);
+    padding-top: 24px;
+}
+
+/* ── Skills ── */
+.cv-section div {
+    margin-bottom: 14px;
+    max-width: var(--text-width);
+}
+
+.cv-section h4 {
+    font-family: var(--font-head);
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--ink);
+    font-style: italic;
+    margin-bottom: 6px;
+}
+
+.cv-section ul {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0;
+    padding: 0;
+}
+
+.cv-section ul li {
+    font-size: 13px;
+    color: var(--ink);
+    padding-right: 14px;
+    line-height: 1.9;
+}
+
+.cv-section ul li::after {
+    content: ',';
+    color: var(--muted);
+}
+
+.cv-section ul li:last-child::after {
+    content: '.';
+    color: var(--muted);
+}
+
+/* ── Education ── */
+.cv-section div strong {
+    font-family: var(--font-head);
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--ink);
+    display: block;
+    margin-bottom: 2px;
+}
+
+/* ── Certifications ── */
+.cv-section > ul {
+    list-style: none;
+    padding: 0;
+    max-width: var(--text-width);
+}
+
+.cv-section > ul > li {
+    font-size: 13px;
+    color: var(--ink);
+    padding: 6px 0;
+    border-bottom: 1px solid var(--rule);
+    font-style: italic;
+}
+
+/* ── Print ── */
+@media print {
+    body { background: #fff; }
+    .cv-page { padding-left: var(--margin-left); }
+}

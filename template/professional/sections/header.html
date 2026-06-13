@@ -1,0 +1,9 @@
+<header class="cv-header">
+    <h1>{{ contact.name }}</h1>
+
+    <div class="contact">
+        {% if contact.email %}<span>{{ contact.email }}</span>{% endif %}
+        {% if contact.phone %}<span>{{ contact.phone }}</span>{% endif %}
+        {% if contact.location %}<span>{{ contact.location }}</span>{% endif %}
+    </div>
+</header>

@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CV Upload & Preview</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+      background: #f5f5f5;
+      margin: 0;
+      padding: 20px;
+      gap: 20px;
+    }
+
+    .container {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      width: 320px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+
+    button {
+      margin-top: 10px;
+      width: 100%;
+      padding: 10px;
+      cursor: pointer;
+    }
+
+    button:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+
+    .status {
+      margin-top: 10px;
+      font-size: 14px;
+    }
+
+    iframe {
+      flex: 1;
+      height: 90vh;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      background: white;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+    <h3>Upload CV</h3>
+
+    <input type="file" id="fileInput" accept=".pdf" />
+
+    <button onclick="uploadFile()">Upload</button>
+    <button id="executeBtn" onclick="runExecute()" disabled>
+      Execute CV Processing
+    </button>
+
+    <button id="downloadBtn" disabled>
+      Download CV
+    </button>
+
+    <div class="status" id="status"></div>
+  </div>
+
+  <iframe id="preview"></iframe>
+
+<script>
+let uploadSuccessful = false;
+let generatedFileUrl = null;
+
+async function uploadFile() {
+  const fileInput = document.getElementById("fileInput");
+  const status = document.getElementById("status");
+  const executeBtn = document.getElementById("executeBtn");
+
+  if (!fileInput.files.length) {
+    status.textContent = "Select a file first.";
+    return;
+  }
+
+  const file = fileInput.files[0];
+  const formData = new FormData();
+  formData.append("file", file);
+
+  try {
+    status.textContent = "Uploading...";
+
+    const res = await fetch("http://127.0.0.1:8000/upload", {
+      method: "POST",
+      body: formData
+    });
+
+    if (!res.ok) throw new Error("Upload failed");
+
+    uploadSuccessful = true;
+    executeBtn.disabled = false;
+
+    status.textContent = "Upload successful. Ready to process.";
+  } catch (err) {
+    uploadSuccessful = false;
+    executeBtn.disabled = true;
+    status.textContent = "Upload failed.";
+  }
+}
+
+async function runExecute() {
+  const status = document.getElementById("status");
+  const preview = document.getElementById("preview");
+  const downloadBtn = document.getElementById("downloadBtn");
+
+  if (!uploadSuccessful) {
+    status.textContent = "Upload first before executing.";
+    return;
+  }
+
+  try {
+    status.textContent = "Processing CV...";
+
+    const res = await fetch("http://127.0.0.1:8000/execute", {
+      method: "POST"
+    });
+
+    if (!res.ok) throw new Error("Execute failed");
+
+    const blob = await res.blob();
+
+    if (generatedFileUrl) {
+      URL.revokeObjectURL(generatedFileUrl);
+    }
+
+    generatedFileUrl = URL.createObjectURL(blob);
+
+    preview.src = generatedFileUrl;
+    preview.style.display = "block";
+
+    downloadBtn.disabled = false;
+
+    status.textContent = "CV ready. Preview below.";
+  } catch (err) {
+    status.textContent = "Execution failed.";
+  }
+}
+
+document.getElementById("downloadBtn").addEventListener("click", () => {
+  if (!generatedFileUrl) return;
+
+  const a = document.createElement("a");
+  a.href = generatedFileUrl;
+  a.download = "generated_cv.pdf";
+
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+});
+</script>
+
+</body>
+</html>

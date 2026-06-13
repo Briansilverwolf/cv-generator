@@ -1,0 +1,20 @@
+{% if section.type == "projects" %}
+<section class="cv-section">
+    <h2>Projects</h2>
+
+    {% for project in section.data %}
+    <div>
+        <h3>{{ project.name }}</h3>
+        <p>{{ project.tech_stack | join(" · ") }}</p>
+        <p>{{ project.description }}</p>
+
+        <ul>
+            {% for b in project.bullets %}
+            <li>{{ b.text }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endfor %}
+
+</section>
+{% endif %}

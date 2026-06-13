@@ -1,0 +1,284 @@
+/* ==============================================
+   BLUEPRINT VARIANT
+   Technical drawing on deep navy
+   Engineering · Architecture · Systems
+   ============================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap');
+
+:root {
+    --bg:          #0a1628;
+    --surface:     #0f2040;
+    --grid-line:   rgba(100, 160, 220, 0.12);
+    --border:      rgba(100, 160, 220, 0.3);
+    --text:        #d6e8f8;
+    --muted:       #6a9ec2;
+    --highlight:   #4fc3f7;
+    --accent:      #ff9f43;   /* amber callout */
+    --font-sans:   'Space Grotesk', Arial, sans-serif;
+    --font-mono:   'Space Mono', 'Courier New', monospace;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-sans);
+    font-size: 12.5px;
+    font-weight: 300;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    /* Blueprint grid background */
+    background-image:
+        linear-gradient(var(--grid-line) 1px, transparent 1px),
+        linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+    background-size: 24px 24px;
+}
+
+/* ── Page ── */
+.cv-page {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 48px 52px;
+    background: transparent;
+}
+
+/* ── Header ── */
+.cv-header {
+    border: 1px solid var(--border);
+    padding: 24px 28px;
+    margin-bottom: 36px;
+    position: relative;
+    background: var(--surface);
+}
+
+/* Corner marks */
+.cv-header::before,
+.cv-header::after {
+    content: '';
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    border-color: var(--highlight);
+    border-style: solid;
+}
+
+.cv-header::before {
+    top: -1px;
+    left: -1px;
+    border-width: 2px 0 0 2px;
+}
+
+.cv-header::after {
+    bottom: -1px;
+    right: -1px;
+    border-width: 0 2px 2px 0;
+}
+
+.cv-header h1 {
+    font-family: var(--font-mono);
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    color: var(--highlight);
+    line-height: 1.1;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+}
+
+.cv-header .contact {
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+}
+
+.cv-header .contact span {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    color: var(--muted);
+    letter-spacing: 0.04em;
+}
+
+.cv-header .contact span::before {
+    content: '> ';
+    color: var(--accent);
+    font-size: 10px;
+}
+
+/* ── Sections ── */
+.cv-section {
+    margin-bottom: 30px;
+    border-left: 2px solid var(--border);
+    padding-left: 20px;
+    position: relative;
+}
+
+.cv-section::before {
+    content: '';
+    position: absolute;
+    left: -5px;
+    top: 0;
+    width: 8px;
+    height: 8px;
+    background: var(--highlight);
+    border-radius: 50%;
+}
+
+.cv-section h2 {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    font-weight: 400;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--highlight);
+    margin-bottom: 16px;
+    padding-bottom: 6px;
+    border-bottom: 1px dashed var(--border);
+}
+
+/* ── Summary ── */
+.cv-section p {
+    font-size: 13px;
+    font-weight: 300;
+    color: var(--text);
+    line-height: 1.7;
+    max-width: 620px;
+}
+
+/* ── Experience ── */
+article {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 14px 16px;
+    margin-bottom: 12px;
+    position: relative;
+}
+
+article h3 {
+    font-family: var(--font-sans);
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 4px;
+}
+
+article p {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 400;
+    color: var(--muted);
+    margin-bottom: 3px;
+    line-height: 1.5;
+}
+
+article ul {
+    list-style: none;
+    margin-top: 10px;
+    padding: 0;
+}
+
+article ul li {
+    font-size: 12px;
+    font-weight: 300;
+    color: var(--text);
+    padding: 3px 0 3px 18px;
+    position: relative;
+    line-height: 1.6;
+}
+
+article ul li::before {
+    content: '▸';
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+    font-size: 9px;
+    top: 5px;
+}
+
+/* ── Skills ── */
+.cv-section div {
+    margin-bottom: 14px;
+}
+
+.cv-section h4 {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    font-weight: 400;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 8px;
+}
+
+.cv-section ul {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 0;
+}
+
+.cv-section ul li {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    color: var(--highlight);
+    background: rgba(79, 195, 247, 0.08);
+    border: 1px solid rgba(79, 195, 247, 0.25);
+    padding: 3px 9px;
+    letter-spacing: 0.02em;
+}
+
+/* ── Education ── */
+.cv-section div strong {
+    font-family: var(--font-sans);
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    display: block;
+    margin-bottom: 2px;
+}
+
+/* ── Certifications ── */
+.cv-section > ul {
+    list-style: none;
+    padding: 0;
+}
+
+.cv-section > ul > li {
+    font-size: 12px;
+    color: var(--text);
+    padding: 7px 0 7px 18px;
+    border-bottom: 1px dashed var(--border);
+    position: relative;
+}
+
+.cv-section > ul > li::before {
+    content: '□';
+    position: absolute;
+    left: 0;
+    color: var(--highlight);
+    font-size: 10px;
+}
+
+/* ── Print ── */
+@media print {
+    body {
+        background: #fff;
+        background-image: none;
+        color: #111;
+    }
+    :root {
+        --bg: #fff;
+        --surface: #f0f4f8;
+        --text: #111;
+        --muted: #555;
+        --highlight: #1a6bb5;
+        --accent: #b56a1a;
+        --border: #aaccee;
+    }
+}

@@ -1,0 +1,14 @@
+{% if section.type == "certifications" %}
+<section class="cv-section">
+    <h2>Certifications</h2>
+
+    <ul>
+        {% for cert in section.data %}
+        <li>
+            {{ cert.name }} — {{ cert.issuer }} ({{ cert.year }})
+        </li>
+        {% endfor %}
+    </ul>
+
+</section>
+{% endif %}

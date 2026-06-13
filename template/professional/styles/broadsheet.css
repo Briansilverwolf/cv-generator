@@ -1,0 +1,264 @@
+/* ==============================================
+   BROADSHEET VARIANT
+   Newspaper layout, hairline rules, dense columns
+   Journalism · Media · Communications
+   ============================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap');
+
+:root {
+    --paper:     #f5f3ef;
+    --ink:       #111;
+    --muted:     #555;
+    --rule:      #111;
+    --rule-thin: #bbb;
+    --date-red:  #c0291d;
+    --font-display: 'Playfair Display', 'Times New Roman', serif;
+    --font-text:    'IBM Plex Sans', Arial, sans-serif;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--font-text);
+    font-size: 12.5px;
+    font-weight: 300;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* ── Page ── */
+.cv-page {
+    max-width: 920px;
+    margin: 0 auto;
+    padding: 40px 44px;
+}
+
+/* ── Header: masthead style ── */
+.cv-header {
+    text-align: center;
+    border-top: 3px double var(--rule);
+    border-bottom: 3px double var(--rule);
+    padding: 20px 0 16px;
+    margin-bottom: 36px;
+    position: relative;
+}
+
+.cv-header::before {
+    content: '— Curriculum Vitae —';
+    font-family: var(--font-text);
+    font-size: 9px;
+    font-weight: 400;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--muted);
+    display: block;
+    margin-bottom: 10px;
+}
+
+.cv-header h1 {
+    font-family: var(--font-display);
+    font-size: 52px;
+    font-weight: 900;
+    letter-spacing: -0.02em;
+    line-height: 1;
+    color: var(--ink);
+    margin-bottom: 14px;
+}
+
+.cv-header .contact {
+    display: flex;
+    justify-content: center;
+    gap: 0;
+    border-top: 1px solid var(--rule-thin);
+    padding-top: 10px;
+    margin-top: 4px;
+}
+
+.cv-header .contact span {
+    font-family: var(--font-text);
+    font-size: 10.5px;
+    font-weight: 400;
+    color: var(--muted);
+    padding: 0 14px;
+    border-right: 1px solid var(--rule-thin);
+}
+
+.cv-header .contact span:last-child {
+    border-right: none;
+}
+
+/* ── Two-column layout for body ── */
+.cv-section {
+    margin-bottom: 0;
+    padding: 22px 0;
+    border-bottom: 1px solid var(--rule-thin);
+    /* Newspaper column effect: use columns API on the content */
+    column-rule: 1px solid var(--rule-thin);
+}
+
+.cv-section h2 {
+    font-family: var(--font-display);
+    font-size: 22px;
+    font-weight: 700;
+    font-style: italic;
+    color: var(--ink);
+    border-bottom: 2px solid var(--ink);
+    padding-bottom: 6px;
+    margin-bottom: 14px;
+    letter-spacing: -0.01em;
+    column-span: all;
+}
+
+/* Summary gets full-width italic treatment */
+.cv-section:has(p) p {
+    font-size: 14px;
+    font-style: italic;
+    font-weight: 400;
+    color: var(--ink);
+    line-height: 1.7;
+    font-family: var(--font-display);
+    column-count: 2;
+    column-gap: 32px;
+}
+
+/* ── Experience: news story format ── */
+article {
+    break-inside: avoid;
+    margin-bottom: 18px;
+    padding-bottom: 18px;
+    border-bottom: 1px dotted var(--rule-thin);
+}
+
+article:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+article h3 {
+    font-family: var(--font-display);
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--ink);
+    line-height: 1.25;
+    margin-bottom: 3px;
+}
+
+article p {
+    font-family: var(--font-text);
+    font-size: 10.5px;
+    font-weight: 400;
+    color: var(--date-red);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 4px;
+    line-height: 1.4;
+}
+
+article ul {
+    list-style: none;
+    padding: 0;
+    margin-top: 6px;
+}
+
+article ul li {
+    font-size: 12px;
+    font-weight: 300;
+    color: var(--ink);
+    padding: 2px 0 2px 14px;
+    position: relative;
+    line-height: 1.6;
+}
+
+article ul li::before {
+    content: '•';
+    position: absolute;
+    left: 2px;
+    color: var(--muted);
+}
+
+/* ── Section with multi-column experience ── */
+.cv-section:has(article) {
+    column-count: 2;
+    column-gap: 32px;
+}
+
+.cv-section:has(article) h2 {
+    column-span: all;
+}
+
+/* ── Skills: inline comma-separated ── */
+.cv-section div {
+    margin-bottom: 10px;
+    break-inside: avoid;
+}
+
+.cv-section h4 {
+    font-family: var(--font-text);
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 4px;
+    display: inline;
+}
+
+.cv-section ul {
+    list-style: none;
+    display: inline;
+    padding: 0;
+}
+
+.cv-section ul li {
+    font-size: 12px;
+    font-weight: 300;
+    color: var(--ink);
+    display: inline;
+}
+
+.cv-section ul li::after {
+    content: ', ';
+    color: var(--muted);
+}
+
+.cv-section ul li:last-child::after {
+    content: '.';
+}
+
+/* ── Education ── */
+.cv-section div strong {
+    font-family: var(--font-display);
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--ink);
+    display: block;
+    margin-bottom: 2px;
+}
+
+/* ── Certifications ── */
+.cv-section > ul {
+    list-style: none;
+    padding: 0;
+}
+
+.cv-section > ul > li {
+    font-size: 12px;
+    color: var(--ink);
+    padding: 5px 0;
+    border-bottom: 1px dotted var(--rule-thin);
+}
+
+/* ── Print ── */
+@media print {
+    body { background: #fff; }
+    .cv-page { padding: 24px; }
+    .cv-section:has(article) { column-count: 2; }
+}

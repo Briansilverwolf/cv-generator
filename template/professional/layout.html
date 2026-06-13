@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>{{ contact.name }} — CV</title>
+
+    <style>  {{ base_css }} </style>
+
+    <style>   {{ variant_css }} </style>
+</head>
+<body>
+
+<main class="cv-page">
+    {% include template_slot + "/sections/header.html" %}
+    {% include template_slot + "/sections/summary.html" %}
+    {% for section in sections %}
+        {% if section.type == "experience" %}
+            {% include template_slot + "/sections/experience.html" %}
+        {% elif section.type == "skills" %}
+            {% include template_slot + "/sections/skills.html" %}
+        {% elif section.type == "education" %}
+            {% include template_slot + "/sections/education.html" %}
+        {% elif section.type == "projects" %}
+            {% include template_slot + "/sections/projects.html" %}
+        {% elif section.type == "certifications" %}
+            {% include template_slot + "/sections/certifications.html" %}
+        {% endif %}
+    {% endfor %}
+</main>
+</body>
+</html>
