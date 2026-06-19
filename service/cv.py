@@ -9,7 +9,7 @@ def write_cv(original:str, analysis:CVAnalysisIR)->CVGenerationIR:
 
     response = cv_model.invoke([
         SystemMessage(
-            content = "You are a professional in cv writting i want to recraft it to standard and professionalism"
+            content = "You are a professional in cv writting i want to recraft it to standard and professionalism, cv should be about 2 pages not more"
         ),
         HumanMessage(
             content= f"""
@@ -24,5 +24,5 @@ def write_cv(original:str, analysis:CVAnalysisIR)->CVGenerationIR:
             
         )
     ])
-    
+   
     return response

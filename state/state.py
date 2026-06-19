@@ -1,8 +1,10 @@
 from pydantic import BaseModel
-from typing import Literal, Optional
+from typing import Literal, Optional,Any
 
 from schema.ats import ATSAnalysis
 from schema.cv import CVGenerationIR
+from template.registry import TemplateSelection
+from renders import RenderTreeBuilder
 
 
 class TemplateRegistry(BaseModel):
@@ -10,31 +12,13 @@ class TemplateRegistry(BaseModel):
     variants_by_slot: dict[str, list[str]]
     constraints: dict[str, str]
 
-
-class TemplateSelection(BaseModel):
-    slot: Literal[
-        "minimal",
-        "professional",
-        "technical",
-        "modern"
-    ]
-    variant: Literal[
-        "compact",
-        "detailed",
-        "ats_friendly",
-        "visual"
-    ]
-    version: Optional[str] = None
-
-
-
-
 class CVState(BaseModel):
     
     upload: Optional[str] = None  # MarkItDown output
 
     # Intelligence layer
     analysis: Optional[ATSAnalysis] = None
+    tree: Any= None
     cv_ir: Optional[CVGenerationIR] = None
 
     # Presentation layer

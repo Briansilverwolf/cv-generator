@@ -30,7 +30,7 @@ class SummaryBlock(BaseModel):
 
 class SkillBlock(BaseModel):
     category: str
-    skills: List[str]
+    skills: List[str]  = Field(default_factory = list, description=" short description of the skill")
     keywords: List[str] = Field(default_factory=list)  # ATS enrichment layer
 
 

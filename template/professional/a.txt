@@ -1,6 +1,4 @@
 professional/
-│   ├── a.txt
-│   │   └── Contents of a.txt:
 │   └── layout.html
 │   │   └── Contents of layout.html:
 │   │   │   <!DOCTYPE html>

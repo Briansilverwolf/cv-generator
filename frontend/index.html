@@ -1,168 +1,1307 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>CV Upload & Preview</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CV Studio</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: flex-start;
-      min-height: 100vh;
-      background: #f5f5f5;
-      margin: 0;
-      padding: 20px;
-      gap: 20px;
-    }
+:root {
+  --bg: #F8F9FC;
+  --surface: #FFFFFF;
+  --surface-2: #F1F3F9;
+  --border: #E2E5EF;
+  --border-strong: #C8CCDC;
+  --text: #0F1117;
+  --text-secondary: #5C6278;
+  --text-muted: #9299B0;
+  --accent: #5B6AF0;
+  --accent-light: #EEF0FE;
+  --accent-hover: #4A59DF;
+  --green: #22C55E;
+  --green-light: #DCFCE7;
+  --amber: #F59E0B;
+  --amber-light: #FEF3C7;
+  --red: #EF4444;
+  --red-light: #FEE2E2;
+  --radius: 10px;
+  --radius-sm: 6px;
+  --radius-lg: 14px;
+  --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.08), 0 12px 32px rgba(0,0,0,0.06);
+  --font: 'DM Sans', system-ui, sans-serif;
+  --mono: 'DM Mono', 'Courier New', monospace;
+  --transition: 0.18s ease;
+}
 
-    .container {
-      background: white;
-      padding: 20px;
-      border-radius: 10px;
-      width: 320px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    }
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
 
-    button {
-      margin-top: 10px;
-      width: 100%;
-      padding: 10px;
-      cursor: pointer;
-    }
+/* ── Top Bar ── */
+.topbar {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  height: 52px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 0 20px;
+  flex-shrink: 0;
+  z-index: 50;
+}
 
-    button:disabled {
-      background: #ccc;
-      cursor: not-allowed;
-    }
+.topbar-logo {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-weight: 600;
+  font-size: 15px;
+  color: var(--text);
+  letter-spacing: -0.3px;
+  margin-right: 20px;
+  flex-shrink: 0;
+}
 
-    .status {
-      margin-top: 10px;
-      font-size: 14px;
-    }
+.logo-mark {
+  width: 26px;
+  height: 26px;
+  background: var(--accent);
+  border-radius: 7px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
 
-    iframe {
-      flex: 1;
-      height: 90vh;
-      border: 1px solid #ddd;
-      border-radius: 10px;
-      background: white;
-    }
-  </style>
+.topbar-divider {
+  width: 1px;
+  height: 24px;
+  background: var(--border);
+  margin: 0 16px;
+}
+
+/* API Config Bar */
+.api-config {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+}
+
+.api-config-label {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-muted);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
+
+.api-endpoint-wrapper {
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  overflow: hidden;
+  transition: border-color var(--transition), box-shadow var(--transition);
+  min-width: 0;
+  width: 380px;
+}
+
+.api-endpoint-wrapper:focus-within {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(91,106,240,0.1);
+  background: var(--surface);
+}
+
+.api-prefix {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--text-muted);
+  padding: 0 8px 0 10px;
+  flex-shrink: 0;
+  border-right: 1px solid var(--border);
+  height: 32px;
+  display: flex;
+  align-items: center;
+  background: var(--surface);
+}
+
+.api-input {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--text);
+  background: transparent;
+  border: none;
+  outline: none;
+  padding: 0 10px;
+  height: 32px;
+  flex: 1;
+  min-width: 0;
+}
+
+.api-status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--text-muted);
+  margin-right: 10px;
+  flex-shrink: 0;
+  transition: background var(--transition);
+}
+
+.api-status-dot.online { background: var(--green); box-shadow: 0 0 6px rgba(34,197,94,0.4); }
+.api-status-dot.error { background: var(--red); }
+
+.btn-test {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 0 12px;
+  height: 32px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-secondary);
+  font-family: var(--font);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.btn-test:hover { background: var(--surface-2); border-color: var(--border-strong); color: var(--text); }
+
+/* ── Main Layout ── */
+.workspace {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+}
+
+/* ── Side Rail ── */
+.rail {
+  width: 320px;
+  flex-shrink: 0;
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+.rail-section {
+  padding: 20px;
+  border-bottom: 1px solid var(--border);
+}
+
+.rail-section:last-child { border-bottom: none; }
+
+.section-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 14px;
+}
+
+/* Upload Zone */
+.upload-zone {
+  border: 2px dashed var(--border-strong);
+  border-radius: var(--radius);
+  padding: 28px 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: all var(--transition);
+  position: relative;
+  background: var(--bg);
+}
+
+.upload-zone:hover, .upload-zone.drag-over {
+  border-color: var(--accent);
+  background: var(--accent-light);
+}
+
+.upload-zone.has-file {
+  border-style: solid;
+  border-color: var(--green);
+  background: var(--green-light);
+}
+
+.upload-icon {
+  font-size: 28px;
+  margin-bottom: 10px;
+  display: block;
+}
+
+.upload-primary {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+
+.upload-secondary {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.upload-zone input[type="file"] {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+  width: 100%;
+  height: 100%;
+}
+
+.file-info {
+  display: none;
+  align-items: center;
+  gap: 10px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+  margin-top: 10px;
+}
+
+.file-info.visible { display: flex; }
+
+.file-icon {
+  width: 32px; height: 32px;
+  border-radius: var(--radius-sm);
+  background: var(--accent-light);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 15px;
+  flex-shrink: 0;
+}
+
+.file-details { flex: 1; min-width: 0; }
+
+.file-name {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.file-size {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 1px;
+}
+
+.btn-clear {
+  width: 24px; height: 24px;
+  border-radius: 50%;
+  border: none;
+  background: var(--surface-2);
+  color: var(--text-muted);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  font-size: 13px;
+  flex-shrink: 0;
+  transition: all var(--transition);
+}
+
+.btn-clear:hover { background: var(--red-light); color: var(--red); }
+
+/* Selects */
+.field-group { display: flex; flex-direction: column; gap: 10px; }
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.field-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.select-wrapper {
+  position: relative;
+}
+
+.select-wrapper::after {
+  content: '↓';
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+  font-size: 12px;
+  pointer-events: none;
+}
+
+select {
+  width: 100%;
+  appearance: none;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 9px 32px 9px 12px;
+  font-family: var(--font);
+  font-size: 13px;
+  color: var(--text);
+  outline: none;
+  cursor: pointer;
+  transition: border-color var(--transition), box-shadow var(--transition);
+}
+
+select:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(91,106,240,0.1);
+  background: var(--surface);
+}
+
+/* Style Grid (variant visual picker) */
+.style-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 7px;
+  margin-top: 2px;
+}
+
+.style-card {
+  border: 2px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 10px 10px 8px;
+  cursor: pointer;
+  transition: all var(--transition);
+  background: var(--bg);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.style-card:hover { border-color: var(--accent); background: var(--accent-light); }
+.style-card.selected { border-color: var(--accent); background: var(--accent-light); }
+
+.style-card-preview {
+  height: 36px;
+  border-radius: 3px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.preview-line {
+  height: 4px;
+  border-radius: 2px;
+  background: var(--border);
+}
+
+.style-card.selected .preview-line { background: rgba(91,106,240,0.25); }
+.style-card.selected .preview-line:first-child { background: var(--accent); width: 55%; }
+
+.style-card-name {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  text-align: center;
+}
+
+.style-card.selected .style-card-name { color: var(--accent); }
+
+/* Pipeline Steps */
+.pipeline {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.pipeline-step {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 0;
+  position: relative;
+}
+
+.pipeline-step:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  left: 13px;
+  top: 36px;
+  bottom: 0;
+  width: 2px;
+  background: var(--border);
+  transition: background 0.4s ease;
+}
+
+.pipeline-step.done:not(:last-child)::after { background: var(--green); }
+.pipeline-step.active:not(:last-child)::after { background: linear-gradient(to bottom, var(--accent), var(--border)); }
+
+.step-node {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  background: var(--surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-muted);
+  flex-shrink: 0;
+  transition: all 0.3s ease;
+  position: relative;
+  z-index: 1;
+}
+
+.pipeline-step.active .step-node {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--accent-light);
+  animation: step-pulse 1.5s ease-in-out infinite;
+}
+
+.pipeline-step.done .step-node {
+  border-color: var(--green);
+  background: var(--green);
+  color: white;
+  font-size: 11px;
+}
+
+@keyframes step-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(91,106,240,0.3); }
+  50% { box-shadow: 0 0 0 6px rgba(91,106,240,0); }
+}
+
+.step-body { flex: 1; min-width: 0; padding-top: 3px; }
+
+.step-name {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  transition: color var(--transition);
+}
+
+.pipeline-step.active .step-name { color: var(--text); }
+.pipeline-step.done .step-name { color: var(--text-secondary); }
+
+.step-status {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 2px;
+  min-height: 16px;
+  transition: color var(--transition);
+}
+
+.pipeline-step.active .step-status { color: var(--accent); }
+.pipeline-step.done .step-status { color: var(--green); }
+.pipeline-step.error .step-status { color: var(--red); }
+.pipeline-step.error .step-node { border-color: var(--red); background: var(--red-light); color: var(--red); }
+
+/* Action Buttons */
+.action-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 11px 16px;
+  border-radius: var(--radius-sm);
+  border: 1px solid transparent;
+  font-family: var(--font);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition);
+  position: relative;
+  overflow: hidden;
+}
+
+.btn:disabled {
+  opacity: 0.42;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.btn-accent {
+  background: var(--accent);
+  color: white;
+  border-color: var(--accent);
+  box-shadow: 0 2px 8px rgba(91,106,240,0.3);
+}
+
+.btn-accent:hover:not(:disabled) {
+  background: var(--accent-hover);
+  box-shadow: 0 4px 16px rgba(91,106,240,0.4);
+  transform: translateY(-1px);
+}
+
+.btn-accent:active:not(:disabled) { transform: translateY(0); }
+
+.btn-outline {
+  background: var(--surface);
+  border-color: var(--border);
+  color: var(--text-secondary);
+}
+
+.btn-outline:hover:not(:disabled) {
+  background: var(--surface-2);
+  border-color: var(--border-strong);
+  color: var(--text);
+}
+
+.btn-ghost {
+  background: transparent;
+  border-color: transparent;
+  color: var(--text-muted);
+}
+
+.btn-ghost:hover:not(:disabled) { background: var(--surface-2); color: var(--text-secondary); }
+
+.btn-icon-slot { font-size: 15px; }
+
+/* Spinner */
+.spinner {
+  width: 14px; height: 14px;
+  border: 2px solid rgba(255,255,255,0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  flex-shrink: 0;
+}
+
+.spinner.dark {
+  border: 2px solid var(--border);
+  border-top-color: var(--accent);
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── Preview Area ── */
+.preview-area {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  background: var(--bg);
+}
+
+.preview-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  height: 48px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.preview-topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.preview-title {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text);
+}
+
+.preview-badge {
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 500;
+  padding: 3px 8px;
+  border-radius: 20px;
+  background: var(--surface-2);
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+  display: none;
+}
+
+.preview-badge.visible { display: inline-block; }
+.preview-badge.ready { background: var(--green-light); color: #16a34a; border-color: #bbf7d0; }
+
+.preview-topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.preview-frame-wrap {
+  flex: 1;
+  display: flex;
+  align-items: stretch;
+  justify-content: stretch;
+  padding: 20px;
+  min-height: 0;
+  position: relative;
+}
+
+/* Empty state */
+.preview-empty {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+.empty-illustration {
+  width: 80px; height: 80px;
+  background: var(--surface);
+  border: 2px dashed var(--border-strong);
+  border-radius: var(--radius-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+}
+
+.preview-empty p {
+  font-size: 13px;
+  color: var(--text-muted);
+  max-width: 220px;
+  line-height: 1.6;
+}
+
+iframe {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: white;
+  box-shadow: var(--shadow-md);
+  display: none;
+  height: 100%;
+}
+
+iframe.visible { display: block; }
+
+/* Loading overlay */
+.loading-overlay {
+  position: absolute;
+  inset: 20px;
+  background: rgba(248,249,252,0.85);
+  border-radius: var(--radius-lg);
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  z-index: 10;
+  backdrop-filter: blur(4px);
+}
+
+.loading-overlay.visible { display: flex; }
+
+.loading-text {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.loading-sub {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+/* Toast */
+.toast-container {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 999;
+  pointer-events: none;
+}
+
+.toast {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--text);
+  color: white;
+  padding: 11px 16px;
+  border-radius: var(--radius);
+  font-size: 13px;
+  font-weight: 400;
+  box-shadow: var(--shadow-md);
+  transform: translateX(110%);
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  pointer-events: all;
+  min-width: 260px;
+  max-width: 380px;
+}
+
+.toast.show { transform: translateX(0); }
+.toast.success .toast-icon { color: #4ade80; }
+.toast.error .toast-icon { color: #f87171; }
+.toast.warning .toast-icon { color: #fbbf24; }
+.toast-icon { font-size: 16px; flex-shrink: 0; }
+.toast-msg { flex: 1; line-height: 1.4; }
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 3px; }
+
+/* Responsive */
+@media (max-width: 700px) {
+  .workspace { flex-direction: column; }
+  .rail { width: 100%; border-right: none; border-bottom: 1px solid var(--border); }
+  .api-endpoint-wrapper { width: 200px; }
+  .style-grid { grid-template-columns: repeat(3, 1fr); }
+}
+</style>
 </head>
-
 <body>
 
-  <div class="container">
-    <h3>Upload CV</h3>
-
-    <input type="file" id="fileInput" accept=".pdf" />
-
-    <button onclick="uploadFile()">Upload</button>
-    <button id="executeBtn" onclick="runExecute()" disabled>
-      Execute CV Processing
-    </button>
-
-    <button id="downloadBtn" disabled>
-      Download CV
-    </button>
-
-    <div class="status" id="status"></div>
+<!-- Top Bar -->
+<header class="topbar">
+  <div class="topbar-logo">
+    <div class="logo-mark">CV</div>
+    Studio
   </div>
 
-  <iframe id="preview"></iframe>
+  <div class="topbar-divider"></div>
+
+  <div class="api-config">
+    <span class="api-config-label">API</span>
+    <div class="api-endpoint-wrapper">
+      <span class="api-prefix">http://</span>
+      <input
+        class="api-input"
+        id="apiHost"
+        type="text"
+        value="50.17.168.162:8000"
+        placeholder="hostname:port"
+        spellcheck="false"
+        autocomplete="off"
+      />
+      <span class="api-status-dot" id="apiDot"></span>
+    </div>
+    <button class="btn-test" id="btnTest" onclick="testConnection()">
+      <span>⟳</span> Test connection
+    </button>
+  </div>
+</header>
+
+<!-- Workspace -->
+<div class="workspace">
+
+  <!-- Side Rail -->
+  <aside class="rail">
+
+    <!-- Upload -->
+    <div class="rail-section">
+      <div class="section-label">Document</div>
+
+      <div class="upload-zone" id="uploadZone">
+        <input type="file" id="fileInput" accept=".pdf,.docx" />
+        <span class="upload-icon" id="uploadIcon">📄</span>
+        <div class="upload-primary" id="uploadPrimary">Drop your CV here</div>
+        <div class="upload-secondary" id="uploadSecondary">PDF or DOCX · click to browse</div>
+      </div>
+
+      <div class="file-info" id="fileInfo">
+        <div class="file-icon">📄</div>
+        <div class="file-details">
+          <div class="file-name" id="fileName">—</div>
+          <div class="file-size" id="fileSize">—</div>
+        </div>
+        <button class="btn-clear" onclick="clearFile()" title="Remove file">✕</button>
+      </div>
+    </div>
+
+    <!-- Template -->
+    <div class="rail-section">
+      <div class="section-label">Template</div>
+      <div class="field-group">
+        <div class="field">
+          <div class="field-label">Slot</div>
+          <div class="select-wrapper">
+            <select id="slotSelect" onchange="onSelectionChange()">
+              <option value="professional">Professional</option>
+              <option value="minimal">Minimal</option>
+              <option value="technical">Technical</option>
+              <option value="modern">Modern</option>
+              <option value="ats">ATS</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Variant -->
+    <div class="rail-section">
+      <div class="section-label">Style variant</div>
+      <div class="style-grid" id="styleGrid"></div>
+    </div>
+
+    <!-- Pipeline -->
+    <div class="rail-section">
+      <div class="section-label">Pipeline</div>
+      <div class="pipeline">
+        <div class="pipeline-step" id="step-upload">
+          <div class="step-node" id="node-upload">1</div>
+          <div class="step-body">
+            <div class="step-name">Upload document</div>
+            <div class="step-status" id="status-upload">Waiting for file</div>
+          </div>
+        </div>
+        <div class="pipeline-step" id="step-process">
+          <div class="step-node" id="node-process">2</div>
+          <div class="step-body">
+            <div class="step-name">Process & generate</div>
+            <div class="step-status" id="status-process">Idle</div>
+          </div>
+        </div>
+        <div class="pipeline-step" id="step-preview">
+          <div class="step-node" id="node-preview">3</div>
+          <div class="step-body">
+            <div class="step-name">Preview ready</div>
+            <div class="step-status" id="status-preview">Not generated</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="rail-section">
+      <div class="action-stack">
+        <button class="btn btn-accent" id="btnUpload" onclick="uploadFile()">
+          <span class="btn-icon-slot">↑</span>
+          Upload document
+        </button>
+        <button class="btn btn-accent" id="btnGenerate" onclick="runExecute()" disabled>
+          <span class="btn-icon-slot">✦</span>
+          Generate CV
+        </button>
+        <button class="btn btn-outline" id="btnDownload" onclick="downloadCV()" disabled>
+          <span class="btn-icon-slot">↓</span>
+          Download PDF
+        </button>
+      </div>
+    </div>
+
+  </aside>
+
+  <!-- Preview -->
+  <main class="preview-area">
+    <div class="preview-topbar">
+      <div class="preview-topbar-left">
+        <span class="preview-title">Preview</span>
+        <span class="preview-badge" id="previewBadge">—</span>
+      </div>
+      <div class="preview-topbar-right">
+        <button class="btn btn-ghost" id="btnRefresh" onclick="refreshPreview()" disabled style="width:auto;padding:6px 12px;font-size:12px;">
+          ⟳ Refresh
+        </button>
+      </div>
+    </div>
+
+    <div class="preview-frame-wrap">
+      <div class="preview-empty" id="previewEmpty">
+        <div class="empty-illustration">🗂️</div>
+        <p>Upload your CV and generate a styled version to see the preview here.</p>
+      </div>
+
+      <div class="loading-overlay" id="loadingOverlay">
+        <div class="spinner dark" style="width:28px;height:28px;border-width:3px;"></div>
+        <div class="loading-text" id="loadingText">Generating your CV…</div>
+        <div class="loading-sub" id="loadingSub">This may take a few seconds</div>
+      </div>
+
+      <iframe id="previewFrame" title="CV Preview"></iframe>
+    </div>
+  </main>
+
+</div>
+
+<!-- Toast container -->
+<div class="toast-container" id="toastContainer"></div>
 
 <script>
-let uploadSuccessful = false;
-let generatedFileUrl = null;
+// ── Config ──
+function getBase() {
+  return 'http://' + document.getElementById('apiHost').value.trim().replace(/^https?:\/\//, '').replace(/\/$/, '');
+}
 
-async function uploadFile() {
-  const fileInput = document.getElementById("fileInput");
-  const status = document.getElementById("status");
-  const executeBtn = document.getElementById("executeBtn");
+// ── State ──
+const S = {
+  uploaded: false,
+  generated: false,
+  generating: false,
+  uploading: false,
+  blobUrl: null,
+  variant: 'studio',
+};
 
-  if (!fileInput.files.length) {
-    status.textContent = "Select a file first.";
+// ── Variants ──
+const VARIANTS = [
+  { value: 'studio',      label: 'Studio' },
+  { value: 'compact',     label: 'Compact' },
+  { value: 'detailed',    label: 'Detailed' },
+  { value: 'visual',      label: 'Visual' },
+  { value: 'ats',         label: 'ATS' },
+  { value: 'obsidian',    label: 'Obsidian' },
+  { value: 'swiss_grid',  label: 'Swiss Grid' },
+  { value: 'blueprint',   label: 'Blueprint' },
+  { value: 'manuscript',  label: 'Manuscript' },
+  { value: 'broadsheet',  label: 'Broadsheet' },
+];
+
+function buildStyleGrid() {
+  const grid = document.getElementById('styleGrid');
+  grid.innerHTML = '';
+  VARIANTS.forEach(v => {
+    const card = document.createElement('div');
+    card.className = 'style-card' + (v.value === S.variant ? ' selected' : '');
+    card.dataset.value = v.value;
+    card.innerHTML = `
+      <div class="style-card-preview">
+        <div class="preview-line" style="width:40%;"></div>
+        <div class="preview-line" style="width:70%;"></div>
+        <div class="preview-line" style="width:55%;"></div>
+        <div class="preview-line" style="width:80%;"></div>
+        <div class="preview-line" style="width:45%;"></div>
+      </div>
+      <div class="style-card-name">${v.label}</div>
+    `;
+    card.addEventListener('click', () => {
+      S.variant = v.value;
+      buildStyleGrid();
+      onSelectionChange();
+    });
+    grid.appendChild(card);
+  });
+}
+
+// ── File Handling ──
+const uploadZone = document.getElementById('uploadZone');
+const fileInput = document.getElementById('fileInput');
+
+uploadZone.addEventListener('dragover', e => { e.preventDefault(); uploadZone.classList.add('drag-over'); });
+uploadZone.addEventListener('dragleave', () => uploadZone.classList.remove('drag-over'));
+uploadZone.addEventListener('drop', e => {
+  e.preventDefault();
+  uploadZone.classList.remove('drag-over');
+  const f = e.dataTransfer.files[0];
+  if (f) handleFileSelected(f);
+});
+
+fileInput.addEventListener('change', () => {
+  if (fileInput.files[0]) handleFileSelected(fileInput.files[0]);
+});
+
+function handleFileSelected(file) {
+  const allowed = ['.pdf', '.docx'];
+  const ext = '.' + file.name.split('.').pop().toLowerCase();
+  if (!allowed.includes(ext)) {
+    showToast('error', '⚠️', 'Only PDF and DOCX files are accepted.');
     return;
   }
+  document.getElementById('fileName').textContent = file.name;
+  document.getElementById('fileSize').textContent = formatSize(file.size);
+  document.getElementById('fileInfo').classList.add('visible');
+  uploadZone.classList.add('has-file');
+  document.getElementById('uploadIcon').textContent = '✅';
+  document.getElementById('uploadPrimary').textContent = 'File ready';
+  document.getElementById('uploadSecondary').textContent = 'Click Upload to send';
+  setStepState('upload', 'idle', 'File selected — press Upload');
+  S.uploaded = false;
+  updateButtons();
+}
 
-  const file = fileInput.files[0];
+function clearFile() {
+  fileInput.value = '';
+  document.getElementById('fileInfo').classList.remove('visible');
+  uploadZone.classList.remove('has-file');
+  document.getElementById('uploadIcon').textContent = '📄';
+  document.getElementById('uploadPrimary').textContent = 'Drop your CV here';
+  document.getElementById('uploadSecondary').textContent = 'PDF or DOCX · click to browse';
+  S.uploaded = false;
+  S.generated = false;
+  resetPipeline();
+  updateButtons();
+}
+
+// ── Upload ──
+async function uploadFile() {
+  if (!fileInput.files[0]) { showToast('warning', '📎', 'Pick a file first.'); return; }
+  if (S.uploading) return;
+
+  S.uploading = true;
+  updateButtons();
+  setStepState('upload', 'active', 'Uploading…');
+  setBtn('btnUpload', true, '<span class="spinner"></span>', 'Uploading…');
+
   const formData = new FormData();
-  formData.append("file", file);
+  formData.append('file', fileInput.files[0]);
 
   try {
-    status.textContent = "Uploading...";
-
-    const res = await fetch("http://127.0.0.1:8000/upload", {
-      method: "POST",
-      body: formData
-    });
-
-    if (!res.ok) throw new Error("Upload failed");
-
-    uploadSuccessful = true;
-    executeBtn.disabled = false;
-
-    status.textContent = "Upload successful. Ready to process.";
-  } catch (err) {
-    uploadSuccessful = false;
-    executeBtn.disabled = true;
-    status.textContent = "Upload failed.";
+    const res = await fetch(getBase() + '/upload', { method: 'POST', body: formData });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    S.uploaded = true;
+    setStepState('upload', 'done', 'Uploaded successfully');
+    showToast('success', '✓', 'Document uploaded — ready to generate.');
+    document.getElementById('btnGenerate').disabled = false;
+  } catch(e) {
+    S.uploaded = false;
+    setStepState('upload', 'error', 'Upload failed — check API host');
+    showToast('error', '✕', 'Upload failed. Check the API host at the top.');
+  } finally {
+    S.uploading = false;
+    setBtn('btnUpload', false, '↑', 'Upload document');
+    updateButtons();
   }
 }
 
+// ── Generate ──
 async function runExecute() {
-  const status = document.getElementById("status");
-  const preview = document.getElementById("preview");
-  const downloadBtn = document.getElementById("downloadBtn");
+  if (!S.uploaded || S.generating) return;
 
-  if (!uploadSuccessful) {
-    status.textContent = "Upload first before executing.";
-    return;
-  }
+  S.generating = true;
+  updateButtons();
+  setStepState('process', 'active', 'Generating…');
+  setStepState('preview', 'idle', 'Waiting…');
+  showLoading(true, 'Generating your CV…', 'Applying template and variant styles');
+  setBtn('btnGenerate', true, '<span class="spinner"></span>', 'Generating…');
+
+  const slot = document.getElementById('slotSelect').value;
 
   try {
-    status.textContent = "Processing CV...";
-
-    const res = await fetch("http://127.0.0.1:8000/execute", {
-      method: "POST"
+    const res = await fetch(getBase() + '/execute', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ slot, variant: S.variant }),
     });
-
-    if (!res.ok) throw new Error("Execute failed");
+    if (!res.ok) throw new Error('HTTP ' + res.status);
 
     const blob = await res.blob();
+    if (S.blobUrl) URL.revokeObjectURL(S.blobUrl);
+    S.blobUrl = URL.createObjectURL(blob);
 
-    if (generatedFileUrl) {
-      URL.revokeObjectURL(generatedFileUrl);
-    }
-
-    generatedFileUrl = URL.createObjectURL(blob);
-
-    preview.src = generatedFileUrl;
-    preview.style.display = "block";
-
-    downloadBtn.disabled = false;
-
-    status.textContent = "CV ready. Preview below.";
-  } catch (err) {
-    status.textContent = "Execution failed.";
+    showPreview(S.blobUrl, slot, S.variant);
+    S.generated = true;
+    setStepState('process', 'done', 'Generated successfully');
+    setStepState('preview', 'done', 'Preview loaded');
+    showToast('success', '✓', 'CV generated. Looking good!');
+  } catch(e) {
+    setStepState('process', 'error', 'Generation failed');
+    showToast('error', '✕', 'Generation failed. Check the API or try again.');
+  } finally {
+    S.generating = false;
+    showLoading(false);
+    setBtn('btnGenerate', false, '✦', 'Generate CV');
+    updateButtons();
   }
 }
 
-document.getElementById("downloadBtn").addEventListener("click", () => {
-  if (!generatedFileUrl) return;
+// ── Refresh preview on selection change ──
+function onSelectionChange() {
+  if (!S.generated) return;
+  refreshPreview();
+}
 
-  const a = document.createElement("a");
-  a.href = generatedFileUrl;
-  a.download = "generated_cv.pdf";
+async function refreshPreview() {
+  if (!S.generated || S.generating) return;
 
+  showLoading(true, 'Updating preview…', 'Fetching with new style settings');
+
+  const slot = document.getElementById('slotSelect').value;
+
+  try {
+    const res = await fetch(getBase() + '/display', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ slot, variant: S.variant }),
+    });
+    if (!res.ok) throw new Error();
+
+    const blob = await res.blob();
+    if (S.blobUrl) URL.revokeObjectURL(S.blobUrl);
+    S.blobUrl = URL.createObjectURL(blob);
+
+    showPreview(S.blobUrl, slot, S.variant);
+    showToast('success', '✓', 'Preview updated.');
+  } catch(e) {
+    showToast('error', '✕', 'Could not refresh preview.');
+  } finally {
+    showLoading(false);
+  }
+}
+
+// ── Download ──
+function downloadCV() {
+  if (!S.blobUrl) return;
+  const a = document.createElement('a');
+  a.href = S.blobUrl;
+  a.download = `cv_${document.getElementById('slotSelect').value}_${S.variant}.pdf`;
   document.body.appendChild(a);
   a.click();
   a.remove();
-});
-</script>
+  showToast('success', '↓', 'Download started.');
+}
 
+// ── Test Connection ──
+async function testConnection() {
+  const dot = document.getElementById('apiDot');
+  const btn = document.getElementById('btnTest');
+  dot.className = 'api-status-dot';
+  btn.textContent = '⟳ Testing…';
+  btn.disabled = true;
+
+  try {
+    const res = await fetch(getBase() + '/upload', { method: 'HEAD', signal: AbortSignal.timeout(4000) });
+    // Any response means server is alive (even 405 Method Not Allowed is fine)
+    dot.classList.add('online');
+    showToast('success', '✓', 'API is reachable.');
+  } catch(e) {
+    dot.classList.add('error');
+    showToast('error', '✕', 'Cannot reach API. Check the host and port.');
+  } finally {
+    btn.innerHTML = '<span>⟳</span> Test connection';
+    btn.disabled = false;
+  }
+}
+
+// ── UI Helpers ──
+function showPreview(url, slot, variant) {
+  const frame = document.getElementById('previewFrame');
+  const empty = document.getElementById('previewEmpty');
+  const badge = document.getElementById('previewBadge');
+
+  frame.src = url;
+  frame.classList.add('visible');
+  empty.style.display = 'none';
+
+  const varLabel = VARIANTS.find(v => v.value === variant)?.label || variant;
+  badge.textContent = `${cap(slot)} · ${varLabel}`;
+  badge.className = 'preview-badge visible ready';
+
+  document.getElementById('btnRefresh').disabled = false;
+  document.getElementById('btnDownload').disabled = false;
+}
+
+function showLoading(show, text = '', sub = '') {
+  const overlay = document.getElementById('loadingOverlay');
+  overlay.classList.toggle('visible', show);
+  if (text) document.getElementById('loadingText').textContent = text;
+  if (sub) document.getElementById('loadingSub').textContent = sub;
+}
+
+function setBtn(id, loading, iconHtml, label) {
+  const btn = document.getElementById(id);
+  if (loading) {
+    btn.innerHTML = `${iconHtml} ${label}`;
+    btn.disabled = true;
+  } else {
+    btn.innerHTML = `<span class="btn-icon-slot">${iconHtml}</span> ${label}`;
+    btn.disabled = false;
+  }
+}
+
+function updateButtons() {
+  document.getElementById('btnUpload').disabled = S.uploading || S.generating;
+  document.getElementById('btnGenerate').disabled = !S.uploaded || S.uploading || S.generating;
+  document.getElementById('btnDownload').disabled = !S.generated;
+  document.getElementById('btnRefresh').disabled = !S.generated || S.generating;
+}
+
+function resetPipeline() {
+  ['upload','process','preview'].forEach(s => setStepState(s, 'idle', s === 'upload' ? 'Waiting for file' : 'Idle'));
+  document.getElementById('previewFrame').classList.remove('visible');
+  document.getElementById('previewEmpty').style.display = '';
+  document.getElementById('previewBadge').className = 'preview-badge';
+  document.getElementById('btnRefresh').disabled = true;
+  document.getElementById('btnDownload').disabled = true;
+  S.blobUrl = null;
+}
+
+function setStepState(step, state, statusText) {
+  const el = document.getElementById(`step-${step}`);
+  const node = document.getElementById(`node-${step}`);
+  const status = document.getElementById(`status-${step}`);
+
+  el.className = 'pipeline-step' + (state !== 'idle' ? ` ${state}` : '');
+  status.textContent = statusText;
+
+  if (state === 'done') node.textContent = '✓';
+  else if (step === 'upload') node.textContent = '1';
+  else if (step === 'process') node.textContent = '2';
+  else node.textContent = '3';
+}
+
+function cap(s) { return s ? s[0].toUpperCase() + s.slice(1) : s; }
+
+function formatSize(bytes) {
+  if (bytes < 1024) return bytes + ' B';
+  if (bytes < 1024*1024) return (bytes/1024).toFixed(1) + ' KB';
+  return (bytes/1024/1024).toFixed(1) + ' MB';
+}
+
+// ── Toast ──
+function showToast(type, icon, msg) {
+  const container = document.getElementById('toastContainer');
+  const toast = document.createElement('div');
+  toast.className = `toast ${type}`;
+  toast.innerHTML = `<span class="toast-icon">${icon}</span><span class="toast-msg">${msg}</span>`;
+  container.appendChild(toast);
+
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => toast.classList.add('show'));
+  });
+
+  setTimeout(() => {
+    toast.classList.remove('show');
+    setTimeout(() => toast.remove(), 350);
+  }, 3800);
+}
+
+// ── Init ──
+buildStyleGrid();
+updateButtons();
+setStepState('upload', 'idle', 'Waiting for file');
+setStepState('process', 'idle', 'Idle');
+setStepState('preview', 'idle', 'Not generated');
+</script>
 </body>
 </html>

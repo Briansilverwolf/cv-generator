@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from tempfile  import NamedTemporaryFile
 from pathlib import Path
+from playwright.async_api import async_playwright
+import tempfile
 
 from jinja2 import Template
 
@@ -57,77 +59,41 @@ class CVRenderer:
 
         return output_file
 
-    async def render_pdf(
-        self,
-        cv,
-        filename: str = "cv.pdf",
-        temp: bool = False,
-    ) -> Path:
+    async def render_pdf(self, cv, filename: str = "cv.pdf", temp: bool = False):
 
-        try:
-            from playwright.async_api import async_playwright
-        except ImportError as exc:
-            raise ImportError(
-                "Playwright is required for PDF output.\n"
-                "Install with:\n"
-                "  pip install playwright\n"
-                "  playwright install chromium"
-            ) from exc
 
-        #data = self._to_dict(cv)
-        #html_source = self._render_template(data)
         html_source = cv
-        # --------------------------------------------------
-        # 1. Create temporary HTML file
-        # --------------------------------------------------
-        with NamedTemporaryFile(
-            mode="w",
-            suffix=".html",
-            delete=False,
-            encoding="utf-8",
-        ) as tmp:
-            tmp.write(html_source)
-            tmp_html = Path(tmp.name)
 
-        # --------------------------------------------------
-        # 2. Decide PDF output location
-        # --------------------------------------------------
         if temp:
-            pdf_tmp = NamedTemporaryFile(
-                suffix=".pdf",
-                delete=False,
-            )
+            pdf_tmp = tempfile.NamedTemporaryFile(suffix=".pdf", delete=False)
             pdf_tmp.close()
             pdf_file = Path(pdf_tmp.name)
         else:
             pdf_file = self.output_dir / filename
 
-        try:
-            async with async_playwright() as pw:
-                browser = await pw.chromium.launch()
+        async with async_playwright() as pw:
+            browser = await pw.chromium.launch(
+                executable_path="/snap/bin/chromium",
+                headless=True
+            )
 
-                page = await browser.new_page()
+            page = await browser.new_page()
 
-                await page.goto(
-                    tmp_html.as_uri(),
-                    wait_until="networkidle",
-                )
+            # KEY FIX: no file:// temp file
+            await page.set_content(html_source)
 
-                await page.pdf(
-                    path=str(pdf_file),
-                    format="A4",
-                    margin={
-                        "top": "2.2cm",
-                        "right": "2cm",
-                        "bottom": "2.2cm",
-                        "left": "2cm",
-                    },
-                    print_background=True,
-                )
+            await page.pdf(
+                path=str(pdf_file),
+                format="A4",
+                margin={
+                    "top": "2.2cm",
+                    "right": "2cm",
+                    "bottom": "2.2cm",
+                    "left": "2cm",
+                },
+                print_background=True,
+            )
 
-                await browser.close()
+            await browser.close()
 
-            return pdf_file
-
-        finally:
-            tmp_html.unlink(missing_ok=True)
+        return pdf_file

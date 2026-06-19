@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CV Composer — Proof Studio</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600;8..60,700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --ink: #1c1b19;
+    --ink-soft: #4a4742;
+    --paper: #faf8f4;
+    --paper-deep: #f1ede4;
+    --line: #ddd6c9;
+    --brass: #a8763e;
+    --brass-deep: #8a5f30;
+    --ok: #3d6b4f;
+    --err: #a8453c;
+    --radius: 2px;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    height: 100%;
+  }
+
+  body {
+    font-family: 'IBM Plex Mono', monospace;
+    background: var(--paper-deep);
+    color: var(--ink);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ===== Masthead ===== */
+
+  .masthead {
+    border-bottom: 1px solid var(--ink);
+    background: var(--paper);
+    padding: 22px 32px 18px;
+  }
+
+  .masthead-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .masthead-title {
+    font-family: 'Source Serif 4', serif;
+    font-weight: 700;
+    font-size: 28px;
+    letter-spacing: 0.01em;
+    margin: 0;
+  }
+
+  .masthead-title span {
+    color: var(--brass);
+    font-style: italic;
+  }
+
+  .masthead-meta {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+
+  .masthead-sub {
+    margin-top: 6px;
+    font-size: 13px;
+    color: var(--ink-soft);
+    max-width: 60ch;
+    line-height: 1.5;
+  }
+
+  /* ===== Workbench layout ===== */
+
+  .workbench {
+    flex: 1;
+    display: flex;
+    min-height: 0;
+  }
+
+  @media (max-width: 880px) {
+    .workbench { flex-direction: column; }
+  }
+
+  /* ===== Control rail ===== */
+
+  .rail {
+    width: 360px;
+    flex-shrink: 0;
+    background: var(--paper);
+    border-right: 1px solid var(--line);
+    padding: 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+    overflow-y: auto;
+  }
+
+  @media (max-width: 880px) {
+    .rail {
+      width: 100%;
+      border-right: none;
+      border-bottom: 1px solid var(--line);
+    }
+  }
+
+  .step {
+    position: relative;
+    padding-left: 0;
+  }
+
+  .step-head {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+
+  .step-number {
+    font-family: 'Source Serif 4', serif;
+    font-style: italic;
+    font-size: 14px;
+    color: var(--brass);
+    flex-shrink: 0;
+  }
+
+  .step-title {
+    font-family: 'Source Serif 4', serif;
+    font-size: 17px;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+  }
+
+  .step-body {
+    padding-left: 22px;
+    border-left: 1px solid var(--line);
+  }
+
+  .step.is-locked .step-body {
+    opacity: 0.45;
+  }
+
+  .step.is-locked .step-title {
+    color: var(--ink-soft);
+  }
+
+  .step.is-locked .step-number {
+    color: var(--ink-soft);
+  }
+
+  .field-label {
+    display: block;
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-bottom: 6px;
+  }
+
+  .field-group {
+    margin-bottom: 16px;
+  }
+
+  .field-group:last-child {
+    margin-bottom: 0;
+  }
+
+  /* File drop */
+
+  .dropzone {
+    border: 1px dashed var(--line);
+    border-radius: var(--radius);
+    padding: 18px 14px;
+    text-align: left;
+    cursor: pointer;
+    transition: border-color 0.15s ease, background 0.15s ease;
+    background: var(--paper-deep);
+  }
+
+  .dropzone:hover,
+  .dropzone.is-dragover {
+    border-color: var(--brass);
+    background: #f7f0e6;
+  }
+
+  .dropzone input[type="file"] {
+    display: none;
+  }
+
+  .dropzone-icon {
+    font-size: 18px;
+    margin-bottom: 6px;
+    color: var(--brass);
+  }
+
+  .dropzone-text {
+    font-size: 12px;
+    color: var(--ink-soft);
+    line-height: 1.5;
+  }
+
+  .dropzone-filename {
+    font-size: 12px;
+    color: var(--ink);
+    font-weight: 600;
+    margin-top: 6px;
+    word-break: break-all;
+  }
+
+  /* Select */
+
+  .field-select {
+    width: 100%;
+    appearance: none;
+    -webkit-appearance: none;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 10px 32px 10px 12px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    color: var(--ink);
+    cursor: pointer;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M0 0L5 6L10 0Z' fill='%231c1b19'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    transition: border-color 0.15s ease;
+  }
+
+  .field-select:hover {
+    border-color: var(--ink-soft);
+  }
+
+  .field-select:focus-visible {
+    outline: 2px solid var(--brass);
+    outline-offset: 1px;
+    border-color: var(--brass);
+  }
+
+  .field-select:disabled {
+    cursor: not-allowed;
+    color: var(--ink-soft);
+    background-color: var(--paper-deep);
+  }
+
+  /* Buttons */
+
+  .btn {
+    width: 100%;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-weight: 600;
+    padding: 13px 16px;
+    border-radius: var(--radius);
+    border: 1px solid var(--ink);
+    background: var(--ink);
+    color: var(--paper);
+    cursor: pointer;
+    transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease, transform 0.05s ease;
+  }
+
+  .btn:hover:not(:disabled) {
+    background: var(--brass-deep);
+    border-color: var(--brass-deep);
+  }
+
+  .btn:active:not(:disabled) {
+    transform: translateY(1px);
+  }
+
+  .btn:disabled {
+    background: transparent;
+    color: var(--line);
+    border-color: var(--line);
+    cursor: not-allowed;
+  }
+
+  .btn-secondary {
+    background: transparent;
+    color: var(--ink);
+  }
+
+  .btn-secondary:hover:not(:disabled) {
+    background: var(--paper-deep);
+    color: var(--ink);
+    border-color: var(--ink);
+  }
+
+  .btn-secondary:disabled {
+    background: transparent;
+    color: var(--line);
+    border-color: var(--line);
+  }
+
+  /* ===== Proof slip (status) ===== */
+
+  .proof-slip {
+    margin-top: auto;
+    border-top: 1px solid var(--ink);
+    padding-top: 18px;
+  }
+
+  .proof-slip-label {
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-bottom: 8px;
+  }
+
+  .proof-stamp {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+    line-height: 1.5;
+    min-height: 20px;
+  }
+
+  .proof-dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--line);
+    flex-shrink: 0;
+    transition: background 0.2s ease;
+  }
+
+  .proof-dot.is-busy {
+    background: var(--brass);
+    animation: pulse 1.1s ease-in-out infinite;
+  }
+
+  .proof-dot.is-ok {
+    background: var(--ok);
+  }
+
+  .proof-dot.is-err {
+    background: var(--err);
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.78); }
+  }
+
+  .proof-message {
+    color: var(--ink-soft);
+  }
+
+  .proof-message.is-ok { color: var(--ok); }
+  .proof-message.is-err { color: var(--err); }
+  .proof-message.is-busy { color: var(--ink); }
+
+  /* ===== Preview pane ===== */
+
+  .pane {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    background: var(--paper-deep);
+    padding: 28px;
+  }
+
+  @media (max-width: 880px) {
+    .pane { padding: 18px; }
+  }
+
+  .pane-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 14px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .pane-title {
+    font-family: 'Source Serif 4', serif;
+    font-size: 17px;
+    font-weight: 600;
+  }
+
+  .pane-tag {
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+
+  .pane-tag b {
+    color: var(--ink);
+    font-weight: 600;
+  }
+
+  .pane-frame {
+    flex: 1;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: #fff;
+    position: relative;
+    overflow: hidden;
+    min-height: 150px;
+  }
+
+  .pane-frame iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    display: block;
+  }
+
+  .pane-empty {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: 10px;
+    color: var(--ink-soft);
+    padding: 40px;
+    transition: opacity 0.2s ease;
+  }
+
+  .pane-empty.is-hidden {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .pane-empty-mark {
+    font-family: 'Source Serif 4', serif;
+    font-style: italic;
+    font-size: 40px;
+    color: var(--line);
+    line-height: 1;
+  }
+
+  .pane-empty-text {
+    font-size: 12px;
+    max-width: 36ch;
+    line-height: 1.7;
+  }
+
+  .pane-frame iframe.is-hidden {
+    opacity: 0;
+  }
+
+  .pane-frame iframe {
+    transition: opacity 0.25s ease;
+    opacity: 1;
+  }
+
+  /* Loading overlay */
+
+  .pane-loading {
+    position: absolute;
+    inset: 0;
+    background: rgba(250, 248, 244, 0.78);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.18s ease;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .pane-loading.is-active {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  .pane-loading-mark {
+    font-family: 'Source Serif 4', serif;
+    font-style: italic;
+    font-size: 13px;
+    color: var(--ink-soft);
+    letter-spacing: 0.04em;
+  }
+
+  .pane-loading-bar {
+    width: 140px;
+    height: 1px;
+    background: var(--line);
+    overflow: hidden;
+    position: relative;
+  }
+
+  .pane-loading-bar::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -40%;
+    width: 40%;
+    height: 100%;
+    background: var(--brass);
+    animation: sweep 1.1s ease-in-out infinite;
+  }
+
+  @keyframes sweep {
+    0% { left: -40%; }
+    100% { left: 100%; }
+  }
+
+  /* Visually hidden helper */
+  .sr-only {
+    position: absolute;
+    width: 1px; height: 1px;
+    overflow: hidden;
+    clip: rect(0,0,0,0);
+  }
+</style>
+</head>
+
+<body>
+
+<header class="masthead">
+  <div class="masthead-row">
+    <h1 class="masthead-title">CV <span>Composer</span></h1>
+    <div class="masthead-meta">Proof Studio · Local Render</div>
+  </div>
+  <p class="masthead-sub">
+    Upload a source CV, choose a layout slot and variant, then generate a typeset proof. Switch slots or variants afterward to refresh the proof instantly.
+  </p>
+</header>
+
+<div class="workbench">
+
+  <aside class="rail">
+
+    <!-- Step 1: Upload -->
+    <div class="step" id="stepUpload">
+      <div class="step-head">
+        <span class="step-number">I.</span>
+        <span class="step-title">Source document</span>
+      </div>
+      <div class="step-body">
+        <div class="field-group">
+          <label class="dropzone" id="dropzone" for="fileInput">
+            <div class="dropzone-icon">&#9670;</div>
+            <div class="dropzone-text">
+              Click or drop a PDF here. This is the CV the proof will be generated from.
+            </div>
+            <div class="dropzone-filename" id="fileName"></div>
+          </label>
+          <input type="file" id="fileInput" accept=".pdf">
+        </div>
+        <button class="btn" id="uploadBtn" onclick="uploadFile()">Submit document</button>
+      </div>
+    </div>
+
+    <!-- Step 2: Configure -->
+    <div class="step is-locked" id="stepConfig">
+      <div class="step-head">
+        <span class="step-number">II.</span>
+        <span class="step-title">Layout &amp; variant</span>
+      </div>
+      <div class="step-body">
+        <div class="field-group">
+          <label class="field-label" for="slotSelect">Slot</label>
+          <select class="field-select" id="slotSelect" disabled>
+            <option value="professional">Professional</option>
+            <option value="minimal">Minimal</option>
+            <option value="technical">Technical</option>
+            <option value="modern">Modern</option>
+            <option value="ats">ATS</option>
+          </select>
+        </div>
+        <div class="field-group">
+          <label class="field-label" for="variantSelect">Variant</label>
+          <select class="field-select" id="variantSelect" disabled>
+            <option value="studio">Studio</option>
+            <option value="compact">Compact</option>
+            <option value="detailed">Detailed</option>
+            <option value="visual">Visual</option>
+            <option value="ats">ATS</option>
+            <option value="obsidian">Obsidian</option>
+            <option value="swiss_grid">Swiss Grid</option>
+            <option value="blueprint">Blueprint</option>
+            <option value="manuscript">Manuscript</option>
+            <option value="broadsheet">Broadsheet</option>
+          </select>
+        </div>
+        <button class="btn" id="executeBtn" onclick="runExecute()" disabled>Generate proof</button>
+      </div>
+    </div>
+
+    <!-- Step 3: Export -->
+    <div class="step is-locked" id="stepExport">
+      <div class="step-head">
+        <span class="step-number">III.</span>
+        <span class="step-title">Export</span>
+      </div>
+      <div class="step-body">
+        <button class="btn btn-secondary" id="downloadBtn" disabled>Download PDF</button>
+      </div>
+    </div>
+
+    <div class="proof-slip">
+      <div class="proof-slip-label">Status</div>
+      <div class="proof-stamp">
+        <span class="proof-dot" id="statusDot"></span>
+        <span class="proof-message" id="status">Awaiting source document.</span>
+      </div>
+    </div>
+
+  </aside>
+
+  <main class="pane">
+    <div class="pane-header">
+      <span class="pane-title">Proof</span>
+      <span class="pane-tag" id="paneTag">No proof generated yet</span>
+    </div>
+    <div class="pane-frame">
+      <div class="pane-empty" id="paneEmpty">
+        <div class="pane-empty-mark">&#8220;&#8221;</div>
+        <div class="pane-empty-text">
+          The typeset proof will appear here once a document has been submitted and a proof generated.
+        </div>
+      </div>
+      <iframe id="preview" class="is-hidden" title="CV preview"></iframe>
+      <div class="pane-loading" id="paneLoading">
+        <div class="pane-loading-mark">Typesetting&hellip;</div>
+        <div class="pane-loading-bar"></div>
+      </div>
+    </div>
+  </main>
+
+</div>
+
+<script>
+
+let uploadSuccessful = false;
+let generatedFileUrl = null;
+let hasGeneratedCv = false;
+
+const dropzone = document.getElementById("dropzone");
+const fileInput = document.getElementById("fileInput");
+const fileNameEl = document.getElementById("fileName");
+const statusEl = document.getElementById("status");
+const statusDot = document.getElementById("statusDot");
+const stepConfig = document.getElementById("stepConfig");
+const stepExport = document.getElementById("stepExport");
+const slotSelect = document.getElementById("slotSelect");
+const variantSelect = document.getElementById("variantSelect");
+const executeBtn = document.getElementById("executeBtn");
+const downloadBtn = document.getElementById("downloadBtn");
+const preview = document.getElementById("preview");
+const paneEmpty = document.getElementById("paneEmpty");
+const paneLoading = document.getElementById("paneLoading");
+const paneTag = document.getElementById("paneTag");
+
+function setStatus(message, state) {
+  statusEl.textContent = message;
+  statusEl.classList.remove("is-ok", "is-err", "is-busy");
+  statusDot.classList.remove("is-ok", "is-err", "is-busy");
+  if (state) {
+    statusEl.classList.add("is-" + state);
+    statusDot.classList.add("is-" + state);
+  }
+}
+
+function updatePaneTag(slot, variant) {
+  if (slot && variant) {
+    paneTag.innerHTML = '<b>' + slot + '</b> / ' + variant;
+  } else {
+    paneTag.textContent = "No proof generated yet";
+  }
+}
+
+dropzone.addEventListener("dragover", (e) => {
+  e.preventDefault();
+  dropzone.classList.add("is-dragover");
+});
+
+dropzone.addEventListener("dragleave", () => {
+  dropzone.classList.remove("is-dragover");
+});
+
+dropzone.addEventListener("drop", (e) => {
+  e.preventDefault();
+  dropzone.classList.remove("is-dragover");
+  if (e.dataTransfer.files.length) {
+    fileInput.files = e.dataTransfer.files;
+    fileInput.dispatchEvent(new Event("change"));
+  }
+});
+
+fileInput.addEventListener("change", () => {
+  if (fileInput.files.length) {
+    fileNameEl.textContent = fileInput.files[0].name;
+  } else {
+    fileNameEl.textContent = "";
+  }
+});
+
+async function uploadFile() {
+
+  if (!fileInput.files.length) {
+    setStatus("Select a PDF before submitting.", "err");
+    return;
+  }
+
+  const file = fileInput.files[0];
+  const formData = new FormData();
+  formData.append("file", file);
+
+  try {
+
+    setStatus("Submitting document\u2026", "busy");
+
+    const response = await fetch(
+      "http://127.0.0.1:8000/upload",
+      {
+        method: "POST",
+        body: formData
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error();
+    }
+
+    uploadSuccessful = true;
+    stepConfig.classList.remove("is-locked");
+    slotSelect.disabled = false;
+    variantSelect.disabled = false;
+    executeBtn.disabled = false;
+
+    setStatus("Document received. Choose a slot and variant.", "ok");
+
+  } catch (error) {
+
+    uploadSuccessful = false;
+    stepConfig.classList.add("is-locked");
+    slotSelect.disabled = true;
+    variantSelect.disabled = true;
+    executeBtn.disabled = true;
+
+    setStatus("Submission failed. Try again.", "err");
+  }
+}
+
+async function runExecute() {
+
+  if (!uploadSuccessful) {
+    setStatus("Submit a source document first.", "err");
+    return;
+  }
+
+  const slot = slotSelect.value;
+  const variant = variantSelect.value;
+
+  try {
+
+    setStatus("Generating proof\u2026", "busy");
+    paneLoading.classList.add("is-active");
+
+    const response = await fetch(
+      "http://127.0.0.1:8000/execute",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ slot, variant })
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error();
+    }
+
+    const blob = await response.blob();
+
+    if (generatedFileUrl) {
+      URL.revokeObjectURL(generatedFileUrl);
+    }
+
+    generatedFileUrl = URL.createObjectURL(blob);
+    preview.src = generatedFileUrl;
+    preview.classList.remove("is-hidden");
+    paneEmpty.classList.add("is-hidden");
+    updatePaneTag(slot, variant);
+
+    hasGeneratedCv = true;
+    stepExport.classList.remove("is-locked");
+    downloadBtn.disabled = false;
+
+    setStatus("Proof generated.", "ok");
+
+  } catch (error) {
+
+    setStatus("Proof generation failed.", "err");
+
+  } finally {
+    paneLoading.classList.remove("is-active");
+  }
+}
+
+async function updatePreview() {
+
+  if (!hasGeneratedCv) {
+    return;
+  }
+
+  const slot = slotSelect.value;
+  const variant = variantSelect.value;
+
+  try {
+
+    setStatus("Updating proof\u2026", "busy");
+    paneLoading.classList.add("is-active");
+
+    const response = await fetch(
+      "http://127.0.0.1:8000/display",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ slot, variant })
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error();
+    }
+
+    const blob = await response.blob();
+
+    if (generatedFileUrl) {
+      URL.revokeObjectURL(generatedFileUrl);
+    }
+
+    generatedFileUrl = URL.createObjectURL(blob);
+    preview.src = generatedFileUrl;
+    updatePaneTag(slot, variant);
+
+    setStatus("Proof updated.", "ok");
+
+  } catch (error) {
+
+    setStatus("Could not update proof.", "err");
+
+  } finally {
+    paneLoading.classList.remove("is-active");
+  }
+}
+
+slotSelect.addEventListener("change", updatePreview);
+variantSelect.addEventListener("change", updatePreview);
+
+downloadBtn.addEventListener("click", () => {
+
+  if (!generatedFileUrl) {
+    return;
+  }
+
+  const link = document.createElement("a");
+  link.href = generatedFileUrl;
+  link.download = "generated_cv.pdf";
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+});
+
+</script>
+
+</body>
+</html>
