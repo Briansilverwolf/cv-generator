@@ -1,6 +1,10 @@
 <header class="cv-header">
     <h1>{{ contact.name }}</h1>
-
+    <div class="title">
+        
+        {% if title.role %}<span>{{ title.role }}</span>{% endif %}
+      
+    </div>
     <div class="contact">
         {% if contact.email %}<span>{{ contact.email }}</span>{% endif %}
         {% if contact.phone %}<span>{{ contact.phone }}</span>{% endif %}

@@ -2,6 +2,10 @@ from pydantic import BaseModel, Field
 from typing import List, Optional, Literal
 
 
+class TitleHeading(BaseModel):
+    document_type: str = 'curriculum vitae'
+    role: str = Field(..., description="the role that is being written for")
+
 # ---------------------------
 # CORE CONTACT + IDENTITY
 # ---------------------------
@@ -23,6 +27,9 @@ class SummaryBlock(BaseModel):
     tone: Literal["formal", "neutral", "technical"] = "neutral"
     keyword_density: Optional[float] = None  # estimated ATS keyword density
 
+
+class AchivementsBlock(BaseModel):
+    achievement: List[str]
 
 # ---------------------------
 # SKILLS (ATS-GROUPED)
@@ -97,8 +104,10 @@ class ProjectBlock(BaseModel):
 
 
 class CVGenerationIR(BaseModel):
+    title:TitleHeading
     contact: ContactBlock
     summary: SummaryBlock
+    achivements: AchivementsBlock
     skills: List[SkillBlock]
     experience: List[ExperienceBlock] = Field(default_factory=list)
     projects: List[ProjectBlock] = Field(default_factory=list)

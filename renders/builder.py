@@ -10,6 +10,7 @@ class RenderSection(BaseModel):
 
 
 class RenderTree(BaseModel):
+    title:Dict
     contact: Dict
     summary: Dict
     sections: List[RenderSection]
@@ -21,11 +22,18 @@ class RenderTreeBuilder:
 
     def build(self, ir: CVGenerationIR) -> RenderTree:
         return RenderTree(
+            title = self._title(ir),
             contact=self._build_contact(ir),
             summary=self._build_summary(ir),
             sections=self._build_sections(ir)
         )
 
+    def _title(self,ir:CVGenerationIR):
+        return{
+            "name":ir.title.document_type,
+            "role": ir.title.role
+        }
+    
     # -------------------------
     # Contact normalization
     # -------------------------
@@ -72,6 +80,14 @@ class RenderTreeBuilder:
                     data=[self._skills_item(s) for s in ir.skills]
                 )
             )
+        if ir.achivements:
+       
+            sections.append(
+                RenderSection(
+                    type = "achivements",
+                    data = ir.achivements.achievement
+                )
+            )
 
         if ir.education:
             sections.append(
@@ -96,6 +112,7 @@ class RenderTreeBuilder:
                     data=[self._cert_item(c) for c in ir.certifications]
                 )
             )
+
 
         return sections
 
@@ -169,4 +186,5 @@ class RenderTreeBuilder:
             "year": c.year,
             "verification_url": c.verification_url
         }
+
         

@@ -1,0 +1,12 @@
+{% if section.type == "achivements" %}
+<section class="cv-section">
+    <h2>Achievements</h2>
+
+    <ul>
+        {% for arch in section.data %}
+        <span>{{arch}}</span>
+        {% endfor %}
+    </ul>
+
+</section>
+{% endif %}

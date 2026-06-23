@@ -11,6 +11,7 @@
 <body>
 
 <main class="cv-page">
+    {% if title.name %}<h1>         Curriculum vitae</h1>{% endif %}
     {% include template_slot + "/sections/header.html" %}
     {% include template_slot + "/sections/summary.html" %}
     {% for section in sections %}
@@ -24,6 +25,8 @@
             {% include template_slot + "/sections/education.html" %}
         {% elif section.type == "projects" %}
             {% include template_slot + "/sections/projects.html" %}
+        {% elif section.type == "achivements" %}
+            {% include template_slot + "/sections/achivements.html" %}
         {% elif section.type == "certifications" %}
             {% include template_slot + "/sections/certifications.html" %}
         {% endif %}
