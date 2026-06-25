@@ -9,12 +9,3 @@ pydantic_settings==2.14.1
 python-multipart
 uvicorn
 
-# for ubuntu linux server
-
-libnss3
-libatk-bridge2.0-0t64 
-libxkbcommon0 
-libgbm1 
-libgtk-3-0t64 
-libasound2t64 
-libxshmfence1
