@@ -1,5 +1,5 @@
 # 1. Base image
-FROM python:3.11-slim
+FROM mcr.microsoft.com/playwright/python:v1.54.0-jammy
 
 # 2. Prevent Python from writing pyc files + ensure logs print immediately
 ENV PYTHONDONTWRITEBYTECODE=1

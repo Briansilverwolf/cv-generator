@@ -152,6 +152,8 @@ async def execute(
         slot=data.slot,
         variant=data.variant
     )
+    
+
 
     state.analysis = analyze_cv(
         state.upload
