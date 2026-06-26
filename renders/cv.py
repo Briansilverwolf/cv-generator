@@ -72,10 +72,7 @@ class CVRenderer:
             pdf_file = self.output_dir / filename
 
         async with async_playwright() as pw:
-            browser = await pw.chromium.launch(
-                executable_path="/snap/bin/chromium",
-                headless=True
-            )
+            browser = await pw.chromium.launch()
 
             page = await browser.new_page()
 
