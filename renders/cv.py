@@ -59,7 +59,7 @@ class CVRenderer:
 
         return output_file
 
-    async def render_pdf(self, cv, filename: str = "cv.pdf", temp: bool = False):
+    async def render_pdf2(self, cv, filename: str = "cv.pdf", temp: bool = False):
 
 
         html_source = cv
@@ -94,7 +94,7 @@ class CVRenderer:
             await browser.close()
 
         return pdf_file
-    async def render_pdf2(
+    async def render_pdf(
                 self,
                 cv,
                 filename: str = "cv.pdf",
