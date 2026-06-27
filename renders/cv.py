@@ -141,7 +141,11 @@ class CVRenderer:
 
         try:
             async with async_playwright() as pw:
-                browser = await pw.chromium.launch()
+                browser = await pw.chromium.launch(
+                    executable_path="/usr/bin/chromium",
+                    headless=True,
+                    args=["--no-sandbox", "--disable-dev-shm-usage"]
+                )
 
                 page = await browser.new_page()
 
