@@ -110,6 +110,7 @@ class CVRenderer:
                 "  pip install playwright\n"
                 "  playwright install chromium"
             ) from exc
+            
 
         #data = self._to_dict(cv)
         #html_source = self._render_template(data)
