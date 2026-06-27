@@ -59,7 +59,48 @@ class CVRenderer:
 
         return output_file
 
-    async def render_pdf(
+    async def render_pdf(self, cv, filename: str = "cv.pdf", temp: bool = False):
+
+
+        html_source = cv
+
+        if temp:
+            pdf_tmp = tempfile.NamedTemporaryFile(suffix=".pdf", delete=False)
+            pdf_tmp.close()
+            pdf_file = Path(pdf_tmp.name)
+        else:
+            pdf_file = self.output_dir / filename
+
+        async with async_playwright() as pw:
+            
+            browser = await pw.chromium.launch(
+                    executable_path="/usr/bin/chromium",
+                    headless=True,
+                    args=["--no-sandbox", "--disable-dev-shm-usage"]
+                )
+            
+
+            page = await browser.new_page()
+
+            # KEY FIX: no file:// temp file
+            await page.set_content(html_source)
+
+            await page.pdf(
+                path=str(pdf_file),
+                format="A4",
+                margin={
+                    "top": "0.5cm",
+                    "right": "0.5cm",
+                    "bottom": "0.5cm",
+                    "left": "0.5cm",
+                },
+                print_background=True,
+            )
+
+            await browser.close()
+
+        return pdf_file
+    async def render_pdf2(
                 self,
                 cv,
                 filename: str = "cv.pdf",
@@ -75,7 +116,6 @@ class CVRenderer:
                 "  pip install playwright\n"
                 "  playwright install chromium"
             ) from exc
-            
 
         #data = self._to_dict(cv)
         #html_source = self._render_template(data)
