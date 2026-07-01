@@ -10,10 +10,3 @@ model = ChatOpenAI(
     base_url=settings.base_url,
     temperature=float(settings.temperature),
 )
-
-
-
-print("API_KEY:", bool(settings.openai_api_key))
-print("MODEL:", repr(settings.model))
-print("BASE_URL:", repr(settings.base_url))
-print("TEMPERATURE:", repr(settings.temperature))
