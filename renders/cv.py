@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from tempfile  import NamedTemporaryFile
 from pathlib import Path
-from playwright.async_api import async_playwright
+from playwright.sync_api import playwright
 import tempfile
 
 from jinja2 import Template
@@ -57,7 +57,7 @@ class CVRenderer:
 
         return output_file
 
-    async def render_pdf(self, cv, filename: str = "cv.pdf", temp: bool = False):
+    def render_pdf(self, cv, filename: str = "cv.pdf", temp: bool = False):
 
 
         html_source = cv
@@ -69,19 +69,19 @@ class CVRenderer:
         else:
             pdf_file = self.output_dir / filename
 
-        async with async_playwright() as pw:
+        with playwright() as pw:
             
-            browser = await pw.chromium.launch(
+            browser = pw.chromium.launch(
 
                 )
             
 
-            page = await browser.new_page()
+            page =  browser.new_page()
 
             # KEY FIX: no file:// temp file
-            await page.set_content(html_source)
+            page.set_content(html_source)
 
-            await page.pdf(
+            page.pdf(
                 path=str(pdf_file),
                 format="A4",
                 margin={

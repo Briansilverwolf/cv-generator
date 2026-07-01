@@ -1,6 +1,6 @@
 from langchain_core.messages import SystemMessage, HumanMessage
 from schema.ats import CVAnalysisIR
-from llm import model
+from app.llm import model
 
 
 def analyze_cv(cv_text:str)->CVAnalysisIR:

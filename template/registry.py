@@ -9,6 +9,11 @@ from pydantic import BaseModel
 from typing import Literal, Optional
 
 
+class TemplateRegistry(BaseModel):
+    available_slots: list[str]
+    variants_by_slot: dict[str, list[str]]
+    constraints: dict[str, str]
+
 class TemplateSelection(BaseModel):
     
     slot: Literal[
