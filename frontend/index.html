@@ -1181,7 +1181,7 @@ select:focus {
 /* ═══════════════════════════════════════════
    ▶ CHANGE YOUR API HOST HERE
    ═══════════════════════════════════════════ */
-const API_HOST = '50.17.168.162';          // e.g. 'localhost:8000' or '192.168.1.10:8000'
+const API_HOST = '127.0.0.1:8000';          // e.g. 'localhost:8000' or '192.168.1.10:8000'
 /* ═══════════════════════════════════════════ */
 
 function getBase() {
@@ -1194,7 +1194,8 @@ const S = {
   generated: false,
   generating: false,
   uploading: false,
-  blobUrl: null,
+  html:null,
+  pdfBlobUrl: null,   // used for download only
   variant: 'studio',
 };
 
@@ -1347,7 +1348,7 @@ async function uploadFile() {
   formData.append('file', fileInput.files[0]);
 
   try {
-    const res = await fetch(getBase() + '/api/upload', { method: 'POST', body: formData });
+    const res = await fetch(getBase() + '/upload', { method: 'POST', body: formData });
     if (!res.ok) throw new Error('HTTP ' + res.status);
     S.uploaded = true;
     setStepState('upload', 'done', 'Uploaded successfully');
@@ -1377,18 +1378,30 @@ async function runExecute() {
   const slot = document.getElementById('slotSelect').value;
 
   try {
-    const res = await fetch(getBase() + '/api/execute', {
+    // Step 1: trigger generation (returns PDF — store for download)
+    const execRes = await fetch(getBase() + '/execute', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ slot, variant: S.variant }),
     });
-    if (!res.ok) throw new Error('HTTP ' + res.status);
+    if (!execRes.ok) throw new Error('execute HTTP ' + execRes.status);
 
-    const blob = await res.blob();
-    if (S.blobUrl) URL.revokeObjectURL(S.blobUrl);
-    S.blobUrl = URL.createObjectURL(blob);
+    const pdfBlob = await execRes.blob();
+    if (S.pdfBlobUrl) URL.revokeObjectURL(S.pdfBlobUrl);
+    S.pdfBlobUrl = URL.createObjectURL(pdfBlob);
 
-    showPreview(S.blobUrl, slot, S.variant);
+    // Step 2: fetch HTML preview from /api/display
+    showLoading(true, 'Loading preview…', 'Rendering HTML view');
+    const dispRes = await fetch(getBase() + '/display', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ slot, variant: S.variant }),
+    });
+    if (!dispRes.ok) throw new Error('display HTTP ' + dispRes.status);
+
+    const html = await dispRes.text();
+    showPreview(html, slot, S.variant);
+
     S.generated = true;
     setStepState('process', 'done', 'Generated successfully');
     setStepState('preview', 'done', 'Preview loaded');
@@ -1425,10 +1438,8 @@ async function refreshPreview() {
     });
     if (!res.ok) throw new Error();
 
-    const blob = await res.blob();
-    if (S.blobUrl) URL.revokeObjectURL(S.blobUrl);
-    S.blobUrl = URL.createObjectURL(blob);
-    showPreview(S.blobUrl, slot, S.variant);
+    const html = await res.text();
+    showPreview(html, slot, S.variant);
     showToast('success', '✓', 'Preview updated.');
   } catch(e) {
     showToast('error', '✕', 'Could not refresh preview.');
@@ -1439,9 +1450,9 @@ async function refreshPreview() {
 
 /* ── Download ── */
 function downloadCV() {
-  if (!S.blobUrl) return;
+  if (!S.pdfBlobUrl) return;
   const a = document.createElement('a');
-  a.href = S.blobUrl;
+  a.href = S.pdfBlobUrl;
   a.download = `cv_${document.getElementById('slotSelect').value}_${S.variant}.pdf`;
   document.body.appendChild(a);
   a.click();
@@ -1457,7 +1468,7 @@ async function testConnection() {
   label.textContent = 'Testing…';
 
   try {
-    const res = await fetch(getBase() + '/upload', {
+    const res = await fetch(getBase() + '/api/upload', {
       method: 'HEAD',
       signal: AbortSignal.timeout(4000),
     });
@@ -1499,14 +1510,26 @@ function zoomFit() {
 }
 
 /* ── UI Helpers ── */
-function showPreview(url, slot, variant) {
+function showPreview(html, slot, variant) {
   const frame = document.getElementById('previewFrame');
   const shell = document.getElementById('cvPreviewShell');
 
-  // Set iframe src to the blob URL (PDF or HTML); for HTML we rely on blob type
-  frame.src = url;
-  // Make the iframe tall enough to show full content; we pin it to A4 min
+  // Write HTML directly into iframe — works on all mobile browsers, no blob URL needed
+  frame.srcdoc = html;
   frame.style.height = '1123px';
+
+  // Expand iframe height once content loads
+  frame.onload = () => {
+    try {
+      const h = frame.contentDocument?.documentElement?.scrollHeight
+             || frame.contentDocument?.body?.scrollHeight;
+      if (h && h > 400) {
+        frame.style.height = h + 'px';
+        document.getElementById('cvPage').style.minHeight = h + 'px';
+      }
+    } catch(e) { /* sandboxed, ignore */ }
+    zoomFit();
+  };
 
   shell.classList.add('visible');
   document.getElementById('previewEmpty').style.display = 'none';
@@ -1517,22 +1540,8 @@ function showPreview(url, slot, variant) {
   badge.className   = 'preview-badge visible ready';
 
   document.getElementById('btnRefresh').disabled  = false;
-  document.getElementById('btnDownload').disabled = false;
+  document.getElementById('btnDownload').disabled = !S.pdfBlobUrl;
 
-  // Auto-fit after frame loads
-  frame.onload = () => {
-    // Try to expand height to iframe's actual content
-    try {
-      const h = frame.contentDocument?.body?.scrollHeight;
-      if (h && h > 200) {
-        frame.style.height = h + 'px';
-        document.getElementById('cvPage').style.minHeight = h + 'px';
-      }
-    } catch(e) { /* cross-origin PDF, ignore */ }
-    zoomFit();
-  };
-
-  // Fit now too (for instant feedback)
   setTimeout(zoomFit, 80);
 }
 
@@ -1553,7 +1562,7 @@ function setBtn(id, loading, iconHtml, label) {
 function updateButtons() {
   document.getElementById('btnUpload').disabled   = S.uploading || S.generating;
   document.getElementById('btnGenerate').disabled = !S.uploaded || S.uploading || S.generating;
-  document.getElementById('btnDownload').disabled = !S.generated;
+  document.getElementById('btnDownload').disabled = !S.pdfBlobUrl;
   document.getElementById('btnRefresh').disabled  = !S.generated || S.generating;
 }
 
@@ -1562,12 +1571,12 @@ function resetPipeline() {
     setStepState(s, 'idle', s === 'upload' ? 'Waiting for file' : s === 'process' ? 'Idle' : 'Not generated')
   );
   document.getElementById('cvPreviewShell').classList.remove('visible');
-  document.getElementById('previewFrame').src = '';
+  document.getElementById('previewFrame').srcdoc = '';
   document.getElementById('previewEmpty').style.display = '';
   document.getElementById('previewBadge').className     = 'preview-badge';
   document.getElementById('btnRefresh').disabled  = true;
   document.getElementById('btnDownload').disabled = true;
-  S.blobUrl = null;
+  if (S.pdfBlobUrl) { URL.revokeObjectURL(S.pdfBlobUrl); S.pdfBlobUrl = null; }
 }
 
 function setStepState(step, state, statusText) {
